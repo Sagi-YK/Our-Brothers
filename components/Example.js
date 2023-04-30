@@ -6,23 +6,23 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const Example = () => {
-    return (
-      <View style={styles.container}>
-          <Text style={styles.text}>Our Brothers</Text>
-      </View>
-    )
-}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Our Brothers</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    text: {
-      fontSize: 50,
-    }
+  container: {
+    flex: 1,
+    backgroundColor: "#ff3",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    fontSize: 50,
+  },
 });
 
-export default Example
+export default Example;
