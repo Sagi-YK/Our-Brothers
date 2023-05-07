@@ -1,8 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { BottomTabBar, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Example from './components/Example';
+import ProfileScreen from './screens/ProfileScreen';
+import NewProjectScreen from './screens/NewProjectScreen';
+import HomeScreen from './screens/HomeScreen';
+import { Header } from 'react-native/Libraries/NewAppScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,11 +19,11 @@ export default function App() {
           justifyContent: 'center',
           alignItems: 'center',
           alignSelf: 'center'
-        }
+        },
       }}>
         <Tab.Screen
           name='Profile'
-          component={Example}
+          component={ProfileScreen}
           options={{
             tabBarLabel: () => null,
             tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='account' color={color} size={30} />)
@@ -28,15 +31,29 @@ export default function App() {
         />
         <Tab.Screen
           name="Plus"
-          component={Example}
+          component={NewProjectScreen}
           options={{
+            headerStyle: {
+              backgroundColor: '#33B8FF',
+            },
+            headerTitleStyle: {
+              color: 'white',
+              fontWeight: 'bold',
+            },
+            headerTitleContainerStyle: {
+              alignItems: 'center',
+              width: '100%',
+            },
+            headerShown: true,
+            headerLeft: () => <MaterialCommunityIcons name='arrow-left' color={'black'} size={30} />,
             tabBarLabel: () => null,
-            tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='plus-circle' color={color} size={40} />),
+            tabBarStyle: {display: 'none'},
+            tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='plus-circle' color={'#33B8FF'} size={60} />),
           }}
         />
         <Tab.Screen
           name='Home'
-          component={Example}
+          component={HomeScreen}
           options={{
             tabBarLabel: () => null,
             tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='home' color={color} size={30} />)
