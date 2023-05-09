@@ -98,6 +98,7 @@ const HomeScreen = () => {
     
   };
 
+
   return (
     <View style={styles.container}>
       <View style={styles.navBar}>
@@ -127,16 +128,17 @@ const HomeScreen = () => {
         <View style={styles.modalView}>
           <ScrollView style={styles.modalContent}>
             <Text style={styles.modalText}>
-              שם המיזם: {selectedEvent.name}
-              {"\n\n"}
-              תאריך המיזם: {selectedEvent.date}
-              {"\n\n"}
-              מיקום המיזם: {selectedEvent.place}
-              {"\n\n"}
-              שעת המיזם: {selectedEvent.time}
-              {"\n\n"}
-              פרטים: {selectedEvent.details}
-              {"\n\n"}
+            <Text style={{ fontWeight: 'bold' }}>שם המיזם:</Text> {selectedEvent.name}
+             {"\n\n"}
+             <Text style={{ fontWeight: 'bold' }}>תאריך המיזם:</Text> {selectedEvent.date}
+             {"\n\n"}
+             <Text style={{ fontWeight: 'bold' }}>שעת המיזם:</Text> {selectedEvent.time}
+             {"\n\n"}
+             <Text style={{ fontWeight: 'bold' }}>מיקום המיזם:</Text> {selectedEvent.place}
+             {"\n\n"}         
+             <Text style={{ fontWeight: 'bold' }}>פרטים:</Text> {selectedEvent.details}
+             {"\n\n"}    
+              
             </Text>
           </ScrollView>
           <View style={styles.buttonContainer}>
