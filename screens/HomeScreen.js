@@ -14,7 +14,7 @@ const dataBase={
       'date': null,
       'time': null,
       'place': null,
-      'isAproved': true,
+      'isAproved': false,
       'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
 
     },
@@ -81,6 +81,7 @@ const dataBase={
       'isAproved': true,
       'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
     },
+    
   ]
 }
 const deviceHeight = Dimensions.get('window').height;
@@ -107,7 +108,7 @@ const HomeScreen = () => {
           {approvedEvents.map((event) => (
             <TouchableOpacity
               key={event.id}
-              style={styles.button}
+              style={styles.Eventbutton}
               onPress={() => handlePress(event)}
             >
               <View>
@@ -122,9 +123,9 @@ const HomeScreen = () => {
       {selectedEvent && (
       
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
-        <ScrollView>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <ScrollView style={styles.modalContent}>
             <Text style={styles.modalText}>
               שם המיזם: {selectedEvent.name}
               {"\n\n"}
@@ -136,20 +137,19 @@ const HomeScreen = () => {
               {"\n\n"}
               פרטים: {selectedEvent.details}
               {"\n\n"}
-              <TouchableOpacity  style={styles.joinButton}>
-                <Text style={styles.joinButtonText}>הצטרף למיזם</Text>
-              </TouchableOpacity>
             </Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.modalButtonText}>סגור</Text>
+          </ScrollView>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.joinButton}>
+              <Text style={styles.joinButtonText}>הצטרף למיזם</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.CloseButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.CloseButtonText}>סגור</Text>
             </TouchableOpacity>
           </View>
         </View>
-        </ScrollView>
-      </Modal>
+      </View>
+    </Modal>
       )}
     </View>
   );
@@ -197,7 +197,7 @@ const HomeScreen = () => {
       marginTop: 50,
       fontSize: 40,
     },
-    button: {
+    Eventbutton: {
       width: deviceWidth - 40,
       height: 80,
       backgroundColor: '#29AB87',
@@ -205,16 +205,12 @@ const HomeScreen = () => {
       alignItems: 'center',
       justifyContent: 'center',
       margin: 15,
-      
     },
     EventText: {
       fontSize: 25,
       color: 'white',
       textAlign: "center",
     },
-
-
-  
     buttonfootrText:{
       fontSize: 18,
       color: 'white',
@@ -247,40 +243,43 @@ const HomeScreen = () => {
       shadowRadius: 4,
       elevation: 5,
     },
-    modalText: {
+      modalText: {
       fontSize: 25,
       marginBottom: 15,
       textAlign: "center",
     },
-    modalButton:{
-      width: deviceWidth*0.5,
-      height:deviceHeight*0.05,
-      backgroundColor: 'red',
-      borderRadius: 15,
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      justifyContent: 'center',
-      margin: deviceHeight*0.1,
     },
-    modalButtonText:{
-      fontSize:25,
-      color:'white',
-    },
-    joinButton:{
-      width: deviceWidth*0.5,
-      height:deviceHeight*0.05,
-      backgroundColor: '#29AB87',
+    joinButton: {
+      backgroundColor: '#2196F3',
       borderRadius: 15,
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: deviceHeight*0.55,
+      padding: 10,
+      elevation: 2,
+      flex: 1,
+      margin: 10,
     },
-    joinButtonText:{
-      fontSize:25,
-      color:'white',
+    joinButtonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      
     },
-
-
-
+    CloseButton: {
+      backgroundColor: '#f44336',
+      borderRadius: 15,
+      padding: 10,
+      elevation: 2,
+      flex: 1,
+      margin: 10,
+    },
+    CloseButtonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
 });
 
 export default HomeScreen;
