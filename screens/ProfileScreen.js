@@ -5,68 +5,40 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
+import LogIn from "./LogIn";
+import MyEvents from "./MyEvents";
+import UpdateData from "./UpdateData";
+import ProfileSetup from "./ProfileSetup";
 
 const Stack = createStackNavigator();
 
-const Page1 = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.pageText}>Page 1</Text>
-    </View>
-  );
-};
-
-const Page2 = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.pageText}>Page 2</Text>
-    </View>
-  );
-};
-
-const Page3 = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.pageText}>Page 3</Text>
-    </View>
-  );
-};
-
-const Page4 = () => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.pageText}>Page 4</Text>
-    </View>
-  );
-};
-
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={ProfilePage} />
-      <Stack.Screen name="Page1" component={Page1} />
-      <Stack.Screen name="Page2" component={Page2} />
-      <Stack.Screen name="Page3" component={Page3} />
-      <Stack.Screen name="Page4" component={Page4} />
+      <Stack.Screen name="LogIn" component={LogIn} />
+      <Stack.Screen name="MyEvents" component={MyEvents} />
+      <Stack.Screen name="UpdateData" component={UpdateData} />
+      <Stack.Screen name="ProfileSetup" component={ProfileSetup} />
     </Stack.Navigator>
   );
 };
 
 const ProfilePage = ({ navigation }) => {
   const goToPage1 = () => {
-    navigation.navigate("Page1");
+    navigation.navigate("LogIn");
   };
 
   const goToPage2 = () => {
-    navigation.navigate("Page2");
+    navigation.navigate("MyEvents");
   };
 
   const goToPage3 = () => {
-    navigation.navigate("Page3");
+    navigation.navigate("UpdateData");
   };
 
   const goToPage4 = () => {
-    navigation.navigate("Page4");
+    navigation.navigate("ProfileSetup");
   };
 
   return (
