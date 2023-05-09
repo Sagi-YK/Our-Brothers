@@ -1,18 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
-import { BottomTabBar, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import ProfileScreen from './screens/ProfileScreen';
 import NewProjectScreen from './screens/NewProjectScreen';
 import HomeScreen from './screens/HomeScreen';
-import { Header } from 'react-native/Libraries/NewAppScreen';
+import BackButton from './components/BackButton';
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{
+      <Tab.Navigator initialRouteName='Home' backBehavior='history' screenOptions={{
         headerShown: false,
         tabBarStyle: {
           height: '10%',
@@ -30,9 +30,9 @@ export default function App() {
           }}
         />
         <Tab.Screen
-          name="Plus"
+          name="מיזם חדש"
           component={NewProjectScreen}
-          options={{
+          options={({navigation}) => ({
             headerStyle: {
               backgroundColor: '#33B8FF',
             },
@@ -45,11 +45,12 @@ export default function App() {
               width: '100%',
             },
             headerShown: true,
-            headerLeft: () => <MaterialCommunityIcons name='arrow-left' color={'black'} size={30} />,
+            // headerLeft: () => <MaterialCommunityIcons name='arrow-left' color={'black'} size={30} />,
+            headerLeft: () => <BackButton navigation={navigation} />,
             tabBarLabel: () => null,
             tabBarStyle: {display: 'none'},
             tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='plus-circle' color={'#33B8FF'} size={60} />),
-          }}
+          })}
         />
         <Tab.Screen
           name='Home'
