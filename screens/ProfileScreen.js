@@ -20,7 +20,7 @@ const ProfileScreen = () => {
       <Stack.Screen name="LogIn" component={LoginNavScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="MyEvents" component={MyEvents} />
       <Stack.Screen name="UpdateData" component={UpdateData} />
-      <Stack.Screen name="ProfileSetup" component={ProfileSetup} />
+      <Stack.Screen name="Setup" component={ProfileSetup} />
     </Stack.Navigator>
   );
 };
@@ -39,7 +39,7 @@ const ProfilePage = ({ navigation }) => {
   };
 
   const goToPage4 = () => {
-    navigation.navigate("ProfileSetup");
+    navigation.navigate("Setup");
   };
 
   return (
