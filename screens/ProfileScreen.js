@@ -1,37 +1,45 @@
-/**
- * this component will display the profile page
- */
+// /**
+//  * this component will display the profile page
+//  */
 
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import LogIn from "./LogIn";
+import MyEvents from "./MyEvents";
+import UpdateData from "./UpdateData";
+import ProfileSetup from "./ProfileSetup";
 
-// const ProfileScreen = () => {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.text}>Our Brothers</Text>
-//     </View>
-//   );
-// };
-const ProfileScreen = ({ navigation }) => {
+const Stack = createStackNavigator();
+
+const ProfileScreen = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Profile" component={ProfilePage} />
+      <Stack.Screen name="LogIn" component={LogIn} />
+      <Stack.Screen name="MyEvents" component={MyEvents} />
+      <Stack.Screen name="UpdateData" component={UpdateData} />
+      <Stack.Screen name="ProfileSetup" component={ProfileSetup} />
+    </Stack.Navigator>
+  );
+};
+
+const ProfilePage = ({ navigation }) => {
   const goToPage1 = () => {
-    navigation.navigate("Page1");
+    navigation.navigate("LogIn");
   };
 
   const goToPage2 = () => {
-    navigation.navigate("Page2");
+    navigation.navigate("MyEvents");
   };
 
   const goToPage3 = () => {
-    navigation.navigate("Page3");
+    navigation.navigate("UpdateData");
   };
 
   const goToPage4 = () => {
-    navigation.navigate("Page4");
+    navigation.navigate("ProfileSetup");
   };
-
-  // const goToPage5 = () => {
-  //   navigation.navigate("Page5");
-  // };
 
   return (
     <View style={styles.container}>
@@ -77,7 +85,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
   },
   button: {
-    width: 200,
+    width: 250,
     height: 60,
     marginBottom: 30,
     borderRadius: 10,
