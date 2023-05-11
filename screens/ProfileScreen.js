@@ -9,6 +9,7 @@ import LogIn from "./LogIn";
 import MyEvents from "./MyEvents";
 import UpdateData from "./UpdateData";
 import ProfileSetup from "./ProfileSetup";
+import LoginNavScreen from "./LoginNavScreen";
 
 const Stack = createStackNavigator();
 
@@ -16,7 +17,7 @@ const ProfileScreen = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={ProfilePage} />
-      <Stack.Screen name="LogIn" component={LogIn} />
+      <Stack.Screen name="LogIn" component={LoginNavScreen} />
       <Stack.Screen name="MyEvents" component={MyEvents} />
       <Stack.Screen name="UpdateData" component={UpdateData} />
       <Stack.Screen name="ProfileSetup" component={ProfileSetup} />
