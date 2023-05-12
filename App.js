@@ -45,7 +45,6 @@ export default function App() {
               width: '100%',
             },
             headerShown: true,
-            // headerLeft: () => <MaterialCommunityIcons name='arrow-left' color={'black'} size={30} />,
             headerLeft: () => <BackButton navigation={navigation} />,
             tabBarLabel: () => null,
             tabBarStyle: {display: 'none'},
