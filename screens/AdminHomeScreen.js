@@ -1,17 +1,10 @@
 /**
- * this component will display the profile page
+ * this component will display the home page for the admin
  */
 
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
-// const ProfileScreen = () => {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.text}>Our Brothers</Text>
-//     </View>
-//   );
-// };
 const AdminHomeScreen = ({ navigation }) => {
   const goToPage1 = () => {
     navigation.navigate("Page1");
@@ -28,10 +21,6 @@ const AdminHomeScreen = ({ navigation }) => {
   const goToPage4 = () => {
     navigation.navigate("Page4");
   };
-
-  // const goToPage5 = () => {
-  //   navigation.navigate("Page5");
-  // };
 
   return (
     <View style={styles.container}>
@@ -97,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default AdminHomeScreen;
