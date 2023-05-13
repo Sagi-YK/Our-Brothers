@@ -1,96 +1,23 @@
 /**
  * this component will display an Our Brother message
  */
-import React , { useState } from "react";
+import React , { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity,ScrollView,Modal } from "react-native";
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import{db} from '../firebaseConfig'
+import { collection ,onSnapshot} from "@firebase/firestore";
 
-const dataBase={
-  'events':[
-    {
-      'id':'1',
-      'name':'המכתבים שלנו ',
-      'date': null,
-      'time': null,
-      'place': null,
-      'isAproved': false,
-      'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
 
-    },
-    {
-      'id':'2',
-      'name':'ריצה לזכר ',
-      'date': '12.12.15',
-      'time': '16.30',
-      'place': 'הרצליה',
-      'isAproved': true,
-      'details':'ביום שני ה 23.5 נרוץ בהרצלים לזכר '
-    },
-    {
-      'id':'3',
-      'name':'זיכרון בסלון ירושלים ',
-      'date': '12.12.16',
-      'time': '16.30',
-      'place': 'ירושלים',
-      'isAproved': true,
-      'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
-    },
-    {
-      'id':'4',
-      'name':'זיכרון בסלון תל אביב',
-      'date': '12.12.17',
-      'time': '19.00',
-      'place': 'תל אביב',
-      'isAproved': false,
-      'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
-    },
-    {
-      'id':'5',
-      'name':'זיכרון בסלון הרצליה',
-      'date': '12.12.18',
-      'time': '16.30',
-      'isAproved': true,
-      'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
-
-    },
-    {
-      'id':'6',
-      'name':'מרתון לזכר ',
-      'date': '12.12.19',
-      'time': '16.30',
-      'place': 'הרצליה',
-      'isAproved': true ,
-      'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
-    },
-    {
-      'id':'7',
-      'name':'שיפוץ רכב לזכר ',
-      'date': '12.12.20',
-      'time': '19.00',
-      'place': 'הוד השרון ',
-      'isAproved': false,
-      'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
-    },
-    {
-      'id':'8',
-      'name':'יום גיבוש לזכר ',
-      'date': '20.12.21',
-      'time': '17.00',
-      'place': 'הרצליה',
-      'isAproved': true,
-      'details':'ביום שני ה 25.5 ישלחו מכתבים לכולם'
-    },
-    
-  ]
-}
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
-myEvent=null
+
+
+
+
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const approvedEvents = dataBase.events.filter((event) => event.isAproved);
+  const [state,setState] =useState([])
+
 
   const handlePress = (event) => {
     setSelectedEvent(event);
@@ -98,6 +25,29 @@ const HomeScreen = () => {
     
   };
 
+  useEffect(()=>{
+
+    const projectRef = collection(db,'projects') // reference to collection projects
+
+     // onSnapshot is a lisiting to refTode (collection)
+    const subscriber = onSnapshot(projectRef,{
+        // next is the callback function the got called evry time the collection is changed
+        // snapshot is object of the collection that contain the data of the collection (docs)
+        next:(snapshot)=>{
+            const state =[]
+            snapshot.docs.forEach((item)=>{
+               if(item.data().status){
+                state.push({
+                  id:item.id,
+                  ...item.data()
+                })
+               }   
+            })
+            setState(state)
+        },
+    })
+    return () => subscriber();
+},[])
 
   return (
     <View style={styles.container}>
@@ -106,7 +56,7 @@ const HomeScreen = () => {
       </View>
       <ScrollView style={styles.Scroll}>
         <View style={styles.mainPage}>
-          {approvedEvents.map((event) => (
+          {state.map((event) => (
             <TouchableOpacity
               key={event.id}
               style={styles.Eventbutton}
