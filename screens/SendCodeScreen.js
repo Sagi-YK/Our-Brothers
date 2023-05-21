@@ -16,7 +16,7 @@ function SendCodeScreen(props) {
         first_input_name={'code'}
         set_first_input_val={(text)=>set_code(text)}
         first_input_value={code}
-        general_text_button={'send'}
+        general_text_button={'שלח'}
         general_button_function={handleCodePress}
         >
 
