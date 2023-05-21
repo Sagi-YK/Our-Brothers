@@ -91,7 +91,7 @@ function AppForm({
             {log_in_text !== undefined &&
             (<AppButton 
                 text={log_in_text}
-                //style={styles.button}
+                style={styles.button}
                 TextStyle={styles.buttonText}
                 onPress={log_in_func}
                >
@@ -110,9 +110,9 @@ function AppForm({
 
             <AppButton
                     text={general_text_button}
-                    //style={styles.button}
-                    TextStyle={styles.buttonText}
+                    TextStyle={log_in_text === undefined ? styles.buttonText : styles.secondButtonText}
                     onPress={general_button_function}
+                    style={log_in_text === undefined ? styles.button : styles.secondButton}
                 >
 
             </AppButton>
@@ -120,7 +120,7 @@ function AppForm({
             {
                 (forget_pass !== undefined) &&
                 (<AppText 
-                    text={"forgot password ?"}
+                    text={"שכחת סיסמא?"}
                     style={styles.text}
                     onPress={forget_pass}
                  >
@@ -133,7 +133,7 @@ function AppForm({
 }
 const styles = StyleSheet.create({
     container:{
-         backgroundColor: '#87cefa',
+         //backgroundColor: '#87cefa',
          paddingVertical:20,
          flex:1,
          alignItems:'center',
@@ -142,13 +142,27 @@ const styles = StyleSheet.create({
     button:{
         // width:"70%",
         // borderRadius:35,
-        // borderWidth:0,
+         borderWidth:0,
         // marginBottom:40,
+        backgroundColor: "#0782F9"
     },
     buttonText:{
         fontSize:25,
+        fontWeight:'700'
+    },
+    secondButton:{
+        backgroundColor: 'white',
+        borderColor:"#0782F9",
+        borderWidth:2,
+    },
+    secondButtonText:{
+        color:'#0782F9',
+        fontWeight:700,
+        fontSize:25,
     },
     text:{
+        color:"#0782F9",
+        fontWeight:'700',
         fontSize:25,
         textDecorationLine:'underline',
     }

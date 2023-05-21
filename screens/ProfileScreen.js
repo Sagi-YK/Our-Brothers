@@ -17,7 +17,7 @@ const ProfileScreen = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={ProfilePage} />
-      <Stack.Screen name="LogIn" component={LoginNavScreen} />
+      <Stack.Screen name="LogIn" component={LoginNavScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="MyEvents" component={MyEvents} />
       <Stack.Screen name="UpdateData" component={UpdateData} />
       <Stack.Screen name="ProfileSetup" component={ProfileSetup} />

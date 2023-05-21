@@ -11,14 +11,17 @@ const Stack = createNativeStackNavigator();
 function LoginNavScreen(props) {
     return (
    
-      <Stack.Navigator screenOptions={{headerStyle:{backgroundColor:'#87cefa'}}}>
-        <Stack.Screen name="Log-In" component={LogInScreen} />
-        <Stack.Screen name='Sign-Up' component={SignUpScreen} />
-        <Stack.Screen name='Forgot-pass' component={RestartPasswordScreen} />
-        <Stack.Screen name='Code-Screen' component={SendCodeScreen} />
-        <Stack.Screen name='New-Password-Screen' component={NewPasswordScreen} />
+       <Stack.Navigator screenOptions={{headerStyle:{backgroundColor:'white'}}}>
+
+          <Stack.Screen name="Log-In" component={LogInScreen} />
+          <Stack.Screen name='Sign-Up' component={SignUpScreen} />
+          <Stack.Screen name='Forgot-pass' component={RestartPasswordScreen}/>
+          <Stack.Screen name='Code-Screen' component={SendCodeScreen} />
+          <Stack.Screen name='New-Password-Screen' component={NewPasswordScreen} options={{ headerShown: false }}/>
+
+        </Stack.Navigator> 
         
-      </Stack.Navigator>
+      
     
     );
 }

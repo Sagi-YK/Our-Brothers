@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
         
         height:40,
         width:40,
-        //borderRadius:25,
-        backgroundColor:"#fc5c65",
+        borderRadius:10,
+        backgroundColor:"white",
         justifyContent:"center",
         alignItems:'center',
         marginBottom:30,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     text:{
         //paddingVertical:5,
         fontSize:25,
-        color:'black'
+        color:'#0782F9'
     }
 })
 

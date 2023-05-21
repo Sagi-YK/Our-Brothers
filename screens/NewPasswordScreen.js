@@ -41,7 +41,7 @@ function NewPasswordScreen(props) {
                 second_input_touched ={()=>setFieldTouched('confirm_Password')}
                 second_input_is_touched = {touched.confirm_Password}
 
-                general_text_button={'send'}
+                general_text_button={'שלח'}
 
                 >
 
