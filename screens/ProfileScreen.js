@@ -5,10 +5,8 @@
 import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import LogIn from "./LogIn";
 import MyEvents from "./MyEvents";
 import UpdateData from "./UpdateData";
-import ProfileSetup from "./ProfileSetup";
 import LoginNavScreen from "./LoginNavScreen";
 
 const Stack = createStackNavigator();
@@ -17,10 +15,13 @@ const ProfileScreen = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={ProfilePage} />
-      <Stack.Screen name="LogIn" component={LoginNavScreen} options={{ headerShown: false }}/>
+      <Stack.Screen
+        name="LogIn"
+        component={LoginNavScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="MyEvents" component={MyEvents} />
       <Stack.Screen name="UpdateData" component={UpdateData} />
-      <Stack.Screen name="Setup" component={ProfileSetup} />
     </Stack.Navigator>
   );
 };
@@ -38,10 +39,6 @@ const ProfilePage = ({ navigation }) => {
     navigation.navigate("UpdateData");
   };
 
-  const goToPage4 = () => {
-    navigation.navigate("Setup");
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.containerHead}>
@@ -56,9 +53,6 @@ const ProfilePage = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={goToPage3}>
           <Text style={styles.buttonText}>עדכון פרטים</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={goToPage4}>
-          <Text style={styles.buttonText}>הגדרות</Text>
         </TouchableOpacity>
       </View>
     </View>
