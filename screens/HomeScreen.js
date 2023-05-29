@@ -2,13 +2,18 @@
  * this component will display an Our Brother message
  */
 import React , { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity,ScrollView,Modal } from "react-native";
-import{db} from '../firebaseConfig'
-import { collection ,onSnapshot} from "@firebase/firestore";
-
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity,ScrollView,Modal, Alert } from "react-native";
+import{db,auth} from '../firebaseConfig'
+import { collection ,onSnapshot,doc,updateDoc,getDocs} from "@firebase/firestore";
+import { useNavigation } from '@react-navigation/native';
+import { string } from "yup";
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
+const projectRef = collection(db,'projects') // reference to collection projects
+const usersRef = collection(db,'users') // reference to collection users
+
+
 
 
 
@@ -17,6 +22,7 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [state,setState] =useState([])
+  const navigation = useNavigation();
 
 
   const handlePress = (event) => {
@@ -25,9 +31,82 @@ const HomeScreen = () => {
     
   };
 
-  useEffect(()=>{
+  const handleEventPress = async (event) => {
+    const user = auth.currentUser;
+  if (user) {
+    // User is signed in, perform the action
+    console.log("user log in");
+    const uEmail = user.email; // save the current user email 
+    console.log(uEmail);
 
-    const projectRef = collection(db,'projects') // reference to collection projects
+    let Myparticipants=[]; //create empty array to save all the participats of the porject
+    Myparticipants.push(uEmail);
+    console.log(Myparticipants);
+    // check if we have participants to this project and concat event.participants to  mtparticipants
+    let flag=false;
+    if (event.participants)
+    {
+      //loop on all the pariticpants
+      
+      event.participants.forEach(item=>{
+        // check if the user allrady sign to the event
+        if(item===uEmail){
+          Alert.alert("","המשתמש כבר רשום למיזם", [{text: "סגור",onPress:() => setModalVisible(false)}])
+          flag=true;
+          return;
+        }
+        //push the participant to Myparticipants
+        Myparticipants.push(item);
+      })
+      
+    }
+    if(flag){
+      return;
+    }
+
+    //update the doc 
+    const docRefprojects = doc(db,`projects/${event.id}`)
+    updateDoc(docRefprojects,{participants : Myparticipants}); // update specific filed in the doc
+
+    setModalVisible(false);
+
+   
+
+    const allData=await getDocs(usersRef);
+    let dealisArray=[];
+    let userId;
+    console.log("id  "+event.id)
+    dealisArray.push(event.id);
+    console.log("event  "+event)
+    allData.forEach(doc=>{
+      if(doc.data().email==uEmail){
+        userId=doc.id;
+       doc.data().myEvents.forEach(currentEvent=>{
+        dealisArray.push(currentEvent);
+       }) 
+      }
+     
+    })
+   
+    const docRefUsers = doc(db,`users/${userId}`)
+    updateDoc(docRefUsers, {myEvents : dealisArray});
+
+
+  } else {
+    // User is not signed in, handle the case accordingly
+    console.log("user not log in");
+    Alert.alert("","עלייך להתחבר תחילה", [{text: "סגור",onPress:() => {
+      setModalVisible(false)
+      navigation.navigate("Profile");
+    }}])
+    
+  
+    
+    
+  }
+  };
+
+  useEffect(()=>{
 
      // onSnapshot is a lisiting to refTode (collection)
     const subscriber = onSnapshot(projectRef,{
@@ -92,12 +171,13 @@ const HomeScreen = () => {
             </Text>
           </ScrollView>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.joinButton}>
-              <Text style={styles.joinButtonText}>הצטרף למיזם</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.CloseButton} onPress={() => setModalVisible(false)}>
+          <TouchableOpacity style={styles.CloseButton} onPress={() => setModalVisible(false)}>
               <Text style={styles.CloseButtonText}>סגור</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.joinButton}>
+              <Text style={styles.joinButtonText}onPress= {()=>handleEventPress(selectedEvent)}>הצטרף למיזם</Text>
+            </TouchableOpacity>
+           
           </View>
         </View>
       </View>
@@ -108,7 +188,7 @@ const HomeScreen = () => {
 };
   const styles = StyleSheet.create({
     container: {
-      // backgroundColor: '#87ceeb',
+      backgroundColor: '#dcdcdc',
       flex: 1,
     },
     navBar: {
@@ -129,7 +209,7 @@ const HomeScreen = () => {
       width: deviceWidth,
       alignItems: 'center',
       justifyContent: 'center',
-      // backgroundColor: '#87ceeb',
+      // backgroundColor: 'red ',
     },
     Scroll:{
       paddingTop: 0
@@ -151,12 +231,16 @@ const HomeScreen = () => {
     },
     Eventbutton: {
       width: deviceWidth - 40,
-      height: 80,
-      backgroundColor: '#29AB87',
-      borderRadius: 15,
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: 15,
+    height: 80,
+    backgroundColor: '#72A0C1',
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 15,
+    borderWidth: 2,
+    borderColor: '#ffffff',
+    position: 'relative',
+    overflow: 'hidden',
     },
     EventText: {
       fontSize: 25,
