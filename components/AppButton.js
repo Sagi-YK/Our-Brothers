@@ -3,10 +3,10 @@ import { View,StyleSheet, TouchableHighlight, Text} from 'react-native';
 import AppText from './AppText';
 import AppIcon from './AppIcon';
 
-function AppButton({text,onPress,style,TextStyle,icon_name,icon_size,icon_color}) {
+function AppButton({text,onPress,style,secondary,TextStyle,icon_name,icon_size,icon_color}) {
     return (
         <TouchableHighlight 
-        style={[styles.container,style]}
+        style={[styles.container,style,secondary]}
         onPress={onPress}
         >
              {text !== undefined ?  <AppText text={text} style={TextStyle}></AppText> : 
