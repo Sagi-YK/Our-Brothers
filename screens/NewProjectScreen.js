@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import{db,auth} from '../firebaseConfig'
+import { addDoc, collection } from "@firebase/firestore";
+
 
 const NewProjectScreen = () => {
   const [projectName, setProjectName] = useState('');
@@ -13,6 +16,16 @@ const NewProjectScreen = () => {
   const [showPicker, setShowPicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [projectLocation, setProjectLocation] = useState(false);
+  const [fieldValidations, setFieldValidations] = useState({
+    projectName: true,
+    projectCategory: true,
+    advertiserName: true,
+    projectDescription: true,
+    maxNumber: true,
+    minNumber: true,
+    projectLocation: true,
+  });
 
   const handleDateChange = (event, date) => {
     if (date !== undefined) {
@@ -36,10 +49,86 @@ const NewProjectScreen = () => {
     setShowTimePicker(true);
   };
 
-  const handleSubmit = () => {
-    console.log('Project name:', projectName);
-    console.log('Advertiser name:', advertiserName);
-    console.log('Project category:', projectCategory);
+  const handleSubmit = async () => {
+    // check if user log-in
+    const user = auth.currentUser
+    if (user){
+      
+    }
+    else{
+
+    }
+
+    /// Reset all field validations
+    setFieldValidations({
+      projectName: true,
+      projectCategory: true,
+      advertiserName: true,
+      projectDescription: true,
+      maxNumber: true,
+      minNumber: true,
+      projectLocation: true,
+    });
+
+    // Check if all fields are filled
+    if (
+      projectName.trim() === '' ||
+      projectCategory.trim() === '' ||
+      advertiserName.trim() === '' ||
+      projectDescription.trim() === '' ||
+      maxNumber.trim() === '' ||
+      minNumber.trim() === '' ||
+      projectLocation.trim() === ''
+    ) {
+      // Set the validation status for each empty field to false
+      setFieldValidations(prevValidations => ({
+        ...prevValidations,
+        projectName: projectName.trim() !== '',
+        projectCategory: projectCategory.trim() !== '',
+        advertiserName: advertiserName.trim() !== '',
+        projectDescription: projectDescription.trim() !== '',
+        maxNumber: maxNumber.trim() !== '',
+        minNumber: minNumber.trim() !== '',
+        projectLocation: projectLocation.trim() !== '',
+      }));
+
+      console.log('Please fill in all fields');
+      return;
+    }
+  
+    try {
+      // Create a new project object with the form data
+      const project = {
+        projectName,
+        projectCategory,
+        advertiserName,
+        projectDescription,
+        maxNumber: parseInt(maxNumber),
+        minNumber: parseInt(minNumber),
+        selectedDate,
+        selectedTime,
+        projectLocation
+      };
+
+      let proj ={'name':projectName, 'category':projectCategory, 'advertiserName':advertiserName, 'description':projectDescription, 'maxNum':parseInt(maxNumber), 'minNum':parseInt(minNumber), 'date':selectedDate, 'time':selectedTime, 'location':projectLocation, 'status':false,'creator':auth.currentUser.email};
+  
+      // Save the project to the "projects" collection in Firebase
+      const docRef = await addDoc(collection(db, 'projects'), proj);
+      console.log('Project added with ID: ', docRef.id);
+  
+      // Clear the form fields
+      setProjectName('');
+      setProjectCategory('');
+      setAdvertiserName('');
+      setProjectDescription('');
+      setMaxNumber('');
+      setMinNumber('');
+      setSelectedDate(new Date());
+      setSelectedTime(new Date());
+      setProjectLocation('');
+    } catch (error) {
+      console.error('Error adding project: ', error);
+    }
   };
 
   return (
@@ -47,25 +136,38 @@ const NewProjectScreen = () => {
       <ScrollView>
         <Text style={styles.label}>שם המיזם:</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            !fieldValidations.projectName && styles.invalidInput,
+          ]}
           value={projectName}
           onChangeText={setProjectName}
         />
         <Text style={styles.label}>קטגורית המיזם:</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            !fieldValidations.advertiserName && styles.invalidInput,
+          ]}
           value={advertiserName}
           onChangeText={setAdvertiserName}
         />
         <Text style={styles.label}>שם המפרסם:</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            !fieldValidations.projectCategory && styles.invalidInput,
+          ]}
           value={projectCategory}
           onChangeText={setProjectCategory}
         />
         <Text style={styles.label}>תיאור המיזם:</Text>
         <TextInput
-          style={[styles.input, {height: 100}]}
+          style={[
+            styles.input,
+            !fieldValidations.projectDescription && styles.invalidInput,
+            {height: 100}
+          ]}
           value={projectDescription}
           onChangeText={setProjectDescription}
           maxLength={200}
@@ -75,7 +177,11 @@ const NewProjectScreen = () => {
           <View style={{flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={styles.label}>כמות משתתפים מקסימלית:</Text>
             <TextInput
-              style={[styles.input, {height: 30, width: 60, marginRight: 15}]}
+              style={[
+                styles.input,
+                !fieldValidations.maxNumber && styles.invalidInput,
+                {height: 30, width: 60, marginRight: 15}
+              ]}
               value={maxNumber}
               keyboardType='numeric'
               onChangeText={setMaxNumber}
@@ -84,7 +190,11 @@ const NewProjectScreen = () => {
           <View style={{flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={styles.label}>כמות משתתפים מינימלית:</Text>
             <TextInput
-              style={[styles.input, {height: 30, width: 60, marginRight: 15}]}
+              style={[
+                styles.input,
+                !fieldValidations.minNumber && styles.invalidInput,
+                {height: 30, width: 60, marginRight: 15}
+              ]}
               value={minNumber}
               keyboardType='numeric'
               maxLength={999999999}
@@ -95,7 +205,10 @@ const NewProjectScreen = () => {
         <View >
           <Text style={styles.label}>תאריך:</Text>
           <Text style={styles.selectedDate}>{selectedDate.toDateString()}</Text>
-          <TouchableOpacity onPress={handleShowPicker} style={[styles.appButtonContainer, {backgroundColor: "#708090", width: 130}]}>
+          <TouchableOpacity
+            onPress={handleShowPicker}
+            style={[styles.appButtonContainer, {backgroundColor: "#708090", width: 130}]}
+          >
             <Text style={styles.appButtonText}>בחר תאריך</Text>
           </TouchableOpacity>
           {showPicker && (
@@ -125,8 +238,8 @@ const NewProjectScreen = () => {
         <Text style={[styles.label, {marginTop: 10}]}>מיקום:</Text>
         <TextInput
           style={styles.input}
-          value={projectName}
-          onChangeText={setProjectName}
+          value={projectLocation}
+          onChangeText={setProjectLocation}
         />
       </ScrollView>
       {/* <Button title="צור מיזם" onPress={handleSubmit} /> */}
@@ -179,7 +292,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "center",
     textTransform: "uppercase"
-  }
+  },
+  invalidInput: {
+    borderWidth: 1,
+    borderColor: 'red',
+  },
 });
 
 export default NewProjectScreen;
