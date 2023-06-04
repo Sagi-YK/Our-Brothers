@@ -2,12 +2,14 @@
 //  * this component will display the profile page
 //  */
 
-import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MyEvents from "./MyEvents";
 import UpdateData from "./UpdateData";
 import LoginNavScreen from "./LoginNavScreen";
+import React, { useEffect, useState } from "react";
+import { auth } from "../firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Stack = createStackNavigator();
 
@@ -27,17 +29,51 @@ const ProfileScreen = () => {
 };
 
 const ProfilePage = ({ navigation }) => {
+  const [login, setLogin] = useState(false);
+
   const goToPage1 = () => {
     navigation.navigate("LogIn");
   };
 
   const goToPage2 = () => {
-    navigation.navigate("MyEvents");
+    const user = auth.currentUser;
+    if (user) {
+      navigation.navigate("MyEvents");
+    } else {
+      Alert.alert("", "דרושה התחברות למערכת", [{ text: "אישור" }]);
+    }
   };
 
   const goToPage3 = () => {
     navigation.navigate("UpdateData");
   };
+
+  const goToPage4 = () => {
+    Alert.alert("", "להמשיך בתהליך התנתקות?", [
+      {
+        text: "אישור",
+        onPress: () => {
+          auth.signOut();
+        },
+      },
+      { text: "ביטול" },
+    ]);
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setLogin(true);
+      } else {
+        // User is signed out
+        setLogin(false);
+      }
+    });
+
+    // Clean up the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []); // Empty dependency array ensures the effect runs only once
 
   return (
     <View style={styles.container}>
@@ -45,9 +81,16 @@ const ProfilePage = ({ navigation }) => {
         <Text style={styles.headText}>שלום</Text>
       </View>
       <View style={styles.containerButtons}>
-        <TouchableOpacity style={styles.button} onPress={goToPage1}>
-          <Text style={styles.buttonText}>התחברות</Text>
-        </TouchableOpacity>
+        {!login ? (
+          <TouchableOpacity style={styles.button} onPress={goToPage1}>
+            <Text style={styles.buttonText}>התחברות</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={goToPage4}>
+            <Text style={styles.buttonText}>התנתקות</Text>
+          </TouchableOpacity>
+        )}
+
         <TouchableOpacity style={styles.button} onPress={goToPage2}>
           <Text style={styles.buttonText}>המיזמים שלי</Text>
         </TouchableOpacity>
