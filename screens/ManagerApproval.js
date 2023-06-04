@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, FlatList } from 'react-native';
-import { View,StyleSheet,Text } from 'react-native';
+import { View,StyleSheet,ScrollView ,Alert } from 'react-native';
 import ProjectApproval from '../components/ProjectApproval';
 import {db,app} from '../firebaseConfig';
 import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import AppInputText from '../components/AppInputText';
+
 
 
 //const arr = [{text: "מיזם 1"},{text: "מיזם 2"},{text: "מיזם 3"}]
@@ -105,7 +106,8 @@ import AppInputText from '../components/AppInputText';
 
 
 function ManagerApproval(props) {
-    const [state,setState] =useState([])
+    const [state,setState] =useState([])//current user
+
 
     
 
@@ -120,10 +122,13 @@ function ManagerApproval(props) {
             next:(snapshot)=>{
                 const state =[]
                 snapshot.docs.forEach((item)=>{
-                    state.push({
-                        id:item.id,
-                        ...item.data()
-                    })
+                    if(!item.data().status){
+
+                        state.push({
+                            id:item.id,
+                            ...item.data()
+                        })
+                    }
                     
                 })
                 setState(state)
@@ -134,37 +139,51 @@ function ManagerApproval(props) {
         return () => subscriber();
 
     },[])
-    
-    const handleAprrove =  async (item)=>{
+
+    // when user press on aprrove button ask him if he sures he wants to approve project,
+    //and if he does goes to aprroveProject function
+    const handleAprrove =   (item)=>{
+        Alert.alert("","אתה בטוח רוצה לאשר פרויקט זה?",[{text:"ביטול"},{text:"אישור", onPress:()=>approveProject(item)}])
+        
+    }
+
+    // update the database that this project(item) is approved
+    const approveProject =  async (item)=>{
+        
         const docRef = doc(db,`projects/${item.id}`) // reference to specific doc, now i can update its fileds,delete it,etc
 
        await updateDoc(docRef,{status: !item.status}); // update specific filed in the doc
 
     }
 
-    const handleCancell =  async (item)=>{
+    const handleCancell =   (item)=>{
+        Alert.alert("","אתה בטוח שאתה רוצה לבטל פרויקט זה?",[{text:"ביטול"},{text:"אישור", onPress:()=>removeProject(item)}])
+        
+    }
+
+    const removeProject =  async (item)=>{
+        
         const docRef = doc(db,`projects/${item.id}`)
 
         await deleteDoc(docRef) // delete this doc
 
     }
 
+
+
     return (
         
+    <ScrollView style = {styles.scroll}>
         <View style={styles.container}>
-            {state.map((item)=>{
-                
-                if(!item.status){
-                    return <ProjectApproval  key = {item.id} text={item.name} aprrovePress={()=>handleAprrove(item)} cancellPress={()=>handleCancell(item)} />
-                }
-                else{
-                    return null;
-                }
 
-            })}
+                {state.map((item)=>{
+                    
+                        return <ProjectApproval  key = {item.id} titleText={item.name} descriptionText={item.description} aprrovePress={()=>handleAprrove(item)} cancellPress={()=>handleCancell(item)} />
+                    
+                })}
 
-            
         </View>
+     </ScrollView>
     );
     {/* <FlatList 
     data={state}
@@ -181,6 +200,10 @@ const styles = StyleSheet.create({
        paddingTop:50,
        flex:1,
        //width:"100%"     
+    },
+    scroll:{
+
+        backgroundColor:'#DCDCDC'
     }
     
 })

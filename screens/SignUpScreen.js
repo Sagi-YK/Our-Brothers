@@ -4,20 +4,21 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import AppForm from './AppForm';
-import { auth } from '../firebaseConfig';
+import { auth,db } from '../firebaseConfig';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { Alert, Keyboard, TouchableWithoutFeedback, View,StyleSheet } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppInputText from '../components/AppInputText';
 import AppCheckBox from '../components/AppCheckBox';
+import { addDoc, collection, doc, documentId, setDoc } from 'firebase/firestore';
 
 
 
 const validateSchema = Yup.object().shape({
     email: Yup.string().required().email().label("Email"),
-    Password: Yup.string().required().min(4).label("Password"),
-    confirm: Yup.string().required().min(4).label("Confirm Password").oneOf(
+    Password: Yup.string().required().min(6).label("Password"),
+    confirm: Yup.string().required().min(6).label("Confirm Password").oneOf(
       [Yup.ref('Password')],
       'Passwords must match',
     ),
@@ -26,7 +27,7 @@ function SignUpScreen() {
    
 
     const [is_check,set_check] = useState(false)
-    const navigation = useNavigation();
+     const navigation = useNavigation();
 
 
     const hadeleSignUp = (email,Password)=>{
@@ -34,9 +35,22 @@ function SignUpScreen() {
         
         createUserWithEmailAndPassword(auth,email,Password)
         .then((userCredential)=>{
+            const user = userCredential.user
             console.log("register")
             console.log(userCredential.user.email)
-            navigation.navigate("Home")
+           // navigation.navigate("Home")
+           addDoc(collection(db,"users"),{
+            
+            email:user.email,
+            myEvents:[]
+        }, { doc: user.uid })
+            .then(()=>{
+                console.log("user added secssfully")
+                navigation.navigate("Home")
+            }).catch((error=>{
+                console.log(error)
+            }))
+            
         
         })
         .catch((error) => {
