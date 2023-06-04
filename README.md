@@ -13,3 +13,5 @@
 5. NEED TO FINISH THE STYLE.
 
 6. SAGI NEED TO CREATE THE "DELETE AND ADD USERS" PAGE FOR THE ADMIN.
+
+7. when trying to join a event that we was register and then leave, we get a message   that tell that we are already register to this event.
