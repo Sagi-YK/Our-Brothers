@@ -1,20 +1,5 @@
-// import React from "react";
-// import { View, Text, StyleSheet } from "react-native";
-// import { db } from "../firebaseConfig";
-// import React, { useEffect, useState } from "react";
-// import React, { useState } from 'react';
-// import { View, Text, TextInput, Button } from "react-native";
-// import firebase from "firebase/app";
-// import "firebase/auth";
-
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import firebase from "firebase/app";
 import "firebase/auth";
 
@@ -23,7 +8,7 @@ const UpdateData = () => {
   const [password, setPassword] = useState("");
 
   const handleUpdate = () => {
-    const user = firebase.auth().currentUser; // TODO - check why the "auth" is undifined
+    const user = firebase.auth().currentUser;
 
     // Update the email and password
     if (user) {
@@ -44,16 +29,12 @@ const UpdateData = () => {
         .catch((error) => {
           console.error("Error updating password:", error);
         });
-    } else {
-      setMessage(
-        "You need to connect to your account before you can update your data."
-      );
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>עדכון פרטי התחברות</Text>
+      <Text style={styles.title}>Update Data</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -67,10 +48,7 @@ const UpdateData = () => {
         value={password}
         onChangeText={(text) => setPassword(text)}
       />
-      {/* <Button title="Update" onPress={handleUpdate} style={styles.button} /> */}
-      <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-        <Text style={styles.buttonText}> Update </Text>
-      </TouchableOpacity>
+      <Button title="Update" onPress={handleUpdate} style={styles.button} />
     </View>
   );
 };
@@ -85,30 +63,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 50,
+    marginBottom: 16,
   },
   input: {
     width: "100%",
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
-    marginBottom: 40,
+    marginBottom: 16,
     paddingHorizontal: 10,
-    borderRadius: 10,
   },
   button: {
-    width: 100,
-    height: 60,
-    marginBottom: 30,
-    borderRadius: 10,
-    backgroundColor: "#007aff",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#ffffff",
-    fontSize: 15,
-    fontWeight: "bold",
+    width: 200,
+    marginTop: 16,
   },
 });
 
