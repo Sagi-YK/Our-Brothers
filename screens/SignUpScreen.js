@@ -42,7 +42,8 @@ function SignUpScreen() {
            addDoc(collection(db,"users"),{
             
             email:user.email,
-            myEvents:[]
+            myEvents:[],
+            isdeleted:false
         }, { doc: user.uid })
             .then(()=>{
                 console.log("user added secssfully")
@@ -81,6 +82,8 @@ function SignUpScreen() {
                 Keyboard.dismiss();
             }}>
                 <View  style={styles.container}>
+
+                   
 
                 <AppInputText
                   place_holder={'email'}
