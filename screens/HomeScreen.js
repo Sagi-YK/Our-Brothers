@@ -131,13 +131,6 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      
-      {/* <View style={styles.navBar}> */}
-      {/* <ImageBackground source={image2}  style={styles.image2}> */}
-        {/* <Text style={styles.text}>Our Brothers</Text> */}
-        {/* </ImageBackground> */}
-      {/* </View> */}
-     
       <ImageBackground source={image}  style={styles.image}> 
       <ScrollView style={styles.Scroll}>
       
