@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import{db,auth} from '../firebaseConfig'
-import { addDoc, collection } from "@firebase/firestore";
+import { addDoc, collection, updateDoc, getDocs, doc } from "@firebase/firestore";
+import { useNavigation } from '@react-navigation/core';
+import CategoryButton from '../components/CategoryButton';
 
 
 const NewProjectScreen = () => {
+  const navigation = useNavigation();
   const [projectName, setProjectName] = useState('');
   const [projectCategory, setProjectCategory] = useState('');
+  const [isCategorySelected, setIsCategorySelected] = useState(true);
   const [advertiserName, setAdvertiserName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
   const [maxNumber, setMaxNumber] = useState('');
@@ -16,7 +20,7 @@ const NewProjectScreen = () => {
   const [showPicker, setShowPicker] = useState(false);
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [projectLocation, setProjectLocation] = useState(false);
+  const [projectLocation, setProjectLocation] = useState('');
   const [fieldValidations, setFieldValidations] = useState({
     projectName: true,
     projectCategory: true,
@@ -52,14 +56,12 @@ const NewProjectScreen = () => {
   const handleSubmit = async () => {
     // check if user log-in
     const user = auth.currentUser
-    if (user){
-      
-    }
-    else{
-
+    if (!user){
+      Alert.alert("","עליך להתחבר לפני שתוכל ליצור מיזם", [{text: "אישור", onPress: () => navigation.navigate('Profile')}])
+      return;
     }
 
-    /// Reset all field validations
+    // Reset all field validations
     setFieldValidations({
       projectName: true,
       projectCategory: true,
@@ -69,6 +71,10 @@ const NewProjectScreen = () => {
       minNumber: true,
       projectLocation: true,
     });
+
+    if (projectCategory.trim() === '') {
+      setIsCategorySelected(false);
+    }
 
     // Check if all fields are filled
     if (
@@ -95,25 +101,28 @@ const NewProjectScreen = () => {
       console.log('Please fill in all fields');
       return;
     }
+
+    const userEmail = auth.currentUser.email;
   
     try {
       // Create a new project object with the form data
-      const project = {
-        projectName,
-        projectCategory,
-        advertiserName,
-        projectDescription,
-        maxNumber: parseInt(maxNumber),
-        minNumber: parseInt(minNumber),
-        selectedDate,
-        selectedTime,
-        projectLocation
+      let project = {
+        'name':projectName,
+        'category':projectCategory,
+        'advertiserName':advertiserName,
+        'description':projectDescription,
+        'maxNum':parseInt(maxNumber),
+        'minNum':parseInt(minNumber),
+        'date':selectedDate,
+        'time':selectedTime,
+        'location':projectLocation,
+        'status':false,
+        'creator':userEmail,
+        'numpraticipants':1
       };
-
-      let proj ={'name':projectName, 'category':projectCategory, 'advertiserName':advertiserName, 'description':projectDescription, 'maxNum':parseInt(maxNumber), 'minNum':parseInt(minNumber), 'date':selectedDate, 'time':selectedTime, 'location':projectLocation, 'status':false,'creator':auth.currentUser.email};
   
       // Save the project to the "projects" collection in Firebase
-      const docRef = await addDoc(collection(db, 'projects'), proj);
+      const docRef = await addDoc(collection(db, 'projects'), project);
       console.log('Project added with ID: ', docRef.id);
   
       // Clear the form fields
@@ -126,6 +135,25 @@ const NewProjectScreen = () => {
       setSelectedDate(new Date());
       setSelectedTime(new Date());
       setProjectLocation('');
+
+      const userRef = collection(db, "users");
+      const querySnapshot = await getDocs(userRef);
+      const arr = [];
+      arr.push(docRef.id);
+      let userId = '';
+      querySnapshot.forEach((doc) => {
+        if (doc.data().email === userEmail) {
+          userId = doc.id;
+          doc.data().myEvents.forEach(userEvents => {
+            arr.push(userEvents);
+          })
+        }})
+
+      const userRef2 = doc(db, `users/${userId}`);
+      await updateDoc(userRef2, {myEvents:arr});
+
+      Alert.alert("","המיזם נוצר בהצלחה!", [{text: "אישור",}])
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Error adding project: ', error);
     }
@@ -133,7 +161,7 @@ const NewProjectScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{padding: 20}}>
         <Text style={styles.label}>שם המיזם:</Text>
         <TextInput
           style={[
@@ -143,7 +171,7 @@ const NewProjectScreen = () => {
           value={projectName}
           onChangeText={setProjectName}
         />
-        <Text style={styles.label}>קטגורית המיזם:</Text>
+        <Text style={styles.label}>שם המפרסם:</Text>
         <TextInput
           style={[
             styles.input,
@@ -152,14 +180,11 @@ const NewProjectScreen = () => {
           value={advertiserName}
           onChangeText={setAdvertiserName}
         />
-        <Text style={styles.label}>שם המפרסם:</Text>
-        <TextInput
-          style={[
-            styles.input,
-            !fieldValidations.projectCategory && styles.invalidInput,
-          ]}
-          value={projectCategory}
-          onChangeText={setProjectCategory}
+        <CategoryButton
+          selectedCategory={projectCategory}
+          onSelectCategory={setProjectCategory}
+          isCategorySelected={isCategorySelected}
+          setIsCategorySelected={setIsCategorySelected}
         />
         <Text style={styles.label}>תיאור המיזם:</Text>
         <TextInput
@@ -202,14 +227,14 @@ const NewProjectScreen = () => {
               />
           </View>
         </View>
-        <View >
+        <View>
           <Text style={styles.label}>תאריך:</Text>
-          <Text style={styles.selectedDate}>{selectedDate.toDateString()}</Text>
+          <Text style={styles.selectedDate}>{selectedDate.toLocaleDateString()}</Text>
           <TouchableOpacity
             onPress={handleShowPicker}
-            style={[styles.appButtonContainer, {backgroundColor: "#708090", width: 130}]}
+            style={[styles.appDateButtonContainer, {backgroundColor: "#708090", width: 130}]}
           >
-            <Text style={styles.appButtonText}>בחר תאריך</Text>
+            <Text style={styles.appButtonTextDate}>בחר תאריך</Text>
           </TouchableOpacity>
           {showPicker && (
             <DateTimePicker
@@ -223,8 +248,11 @@ const NewProjectScreen = () => {
         <View>
           <Text style={styles.label}>שעה:</Text>
           <Text style={styles.selectedTime}>{selectedTime.toLocaleTimeString()}</Text>
-          <TouchableOpacity onPress={handleShowTimePicker} style={[styles.appButtonContainer, {backgroundColor: "#708090", width: 130}]}>
-            <Text style={styles.appButtonText}>בחר שעה</Text>
+          <TouchableOpacity
+            onPress={handleShowTimePicker}
+            style={[styles.appDateButtonContainer, {backgroundColor: "#708090", width: 130}]}
+          >
+            <Text style={styles.appButtonTextDate}>בחר שעה</Text>
           </TouchableOpacity>
           {showTimePicker && (
             <DateTimePicker
@@ -237,15 +265,17 @@ const NewProjectScreen = () => {
         </View>
         <Text style={[styles.label, {marginTop: 10}]}>מיקום:</Text>
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            !fieldValidations.projectLocation && styles.invalidInput,
+          ]}
           value={projectLocation}
           onChangeText={setProjectLocation}
         />
+        <TouchableOpacity onPress={handleSubmit} style={styles.appButtonContainer}>
+          <Text style={styles.appButtonText}>צור מיזם</Text>
+        </TouchableOpacity>
       </ScrollView>
-      {/* <Button title="צור מיזם" onPress={handleSubmit} /> */}
-      <TouchableOpacity onPress={handleSubmit} style={styles.appButtonContainer}>
-        <Text style={styles.appButtonText}>צור מיזם</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -255,9 +285,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flex: 1,
     flexDirection: 'column',
-    justifyContent: "center",
     backgroundColor: "#fff",
-    padding: 16,
+    justifyContent: 'flex-end',
   },
   label: {
     fontSize: 16,
@@ -281,12 +310,28 @@ const styles = StyleSheet.create({
   },
   appButtonContainer: {
     elevation: 8,
-    backgroundColor: "#4682B4", // or 00BFFF
+    backgroundColor: "#4682B4",
     borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 12
+    padding: 10,
+  },
+  appDateButtonContainer: {
+    elevation: 8,
+    backgroundColor: "#4682B4",
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: 'red',
+    width: '100%',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
   appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  },
+  appButtonTextDate: {
     fontSize: 18,
     color: "#fff",
     fontWeight: "bold",
