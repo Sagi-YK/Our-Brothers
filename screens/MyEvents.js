@@ -89,6 +89,17 @@ const MyEvents = () => {
       }
     });
     updateDoc(itemRef, { myEvents: remainEvents });
+    user['myEvents'] = remainEvents
+    setUser(user)
+
+    // let user = {};
+    //     querySnapshot.forEach((doc) => {
+    //       if (doc.data().email === userEmail) {
+    //         user["email"] = doc.data().email;
+    //         user["myEvents"] = doc.data().myEvents;
+    //         user["id"] = doc.id;
+    //       }
+    //     });
 
     let updatedEvents = [];
     events.forEach((updateOneEvent) => {
