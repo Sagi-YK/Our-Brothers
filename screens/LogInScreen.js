@@ -5,11 +5,13 @@ import { useNavigation } from '@react-navigation/native';
 import { Formik, validateYupSchema } from 'formik';
 import * as Yup from 'yup';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebaseConfig';
-import { Alert, TouchableWithoutFeedback,Keyboard,View,StyleSheet } from 'react-native';
+import { auth,db } from '../firebaseConfig';
+import { Alert, TouchableWithoutFeedback,Keyboard,View,StyleSheet,ScrollView } from 'react-native';
 import AppInputText from '../components/AppInputText';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
+import {doc, getDocs,collection} from "firebase/firestore"
+
 
 const validateSchema = Yup.object().shape({
   email: Yup.string().required().email().label("email"),
@@ -17,6 +19,7 @@ const validateSchema = Yup.object().shape({
   
   
 })
+const userRef = collection(db, "users");
 
 function LogInScreen(props) {
     // const [log_in_value,set_log_in_value] = useState('')
@@ -32,12 +35,35 @@ function LogInScreen(props) {
       const forgotPassword = ()=>{
         navigation.navigate('Forgot-pass');
       }
-      const hadeleLog = (password,email)=>{
+      const hadeleLog =  (password,email)=>{
         signInWithEmailAndPassword(auth,email,password)
         .then((userCredential)=>{
-            console.log("log-in")
-            console.log(userCredential.user.email)
-            navigation.goBack()
+
+          const fetchData = async () => {
+            if(email === 'iyarlevi5@gmail.com'){
+              navigation.navigate('admin-screen')
+            }
+            const querySnapshot = await getDocs(userRef);
+            querySnapshot.forEach((doc) => {
+
+              if (doc.data().email === email) {
+                if(doc.data().isdeleted){
+                  Alert.alert("אופס","שם המשתמש או סיסמא לא נכונים",[{text:"אישור"}])
+                }
+                else{
+                  navigation.goBack()
+                }
+              }
+            });
+          }
+          fetchData()
+          
+         
+           
+
+              
+            
+              
         })
         .catch((error) => {
             // const errorCode = error.code;
@@ -51,8 +77,9 @@ function LogInScreen(props) {
     
 
     return (
+      <ScrollView >
           <Formik
-            initialValues={{email:'',Password:''}}
+            initialValues={{email:'',Password:'',name:''}}
             onSubmit={values=>hadeleLog(values.Password,values.email)}
             validationSchema={validateSchema}
           >
@@ -63,8 +90,10 @@ function LogInScreen(props) {
           }}>
               <View style={styles.container}>
 
+             
+
                 <AppInputText
-                  place_holder={'email'}
+                  place_holder={'Email'}
                   onChangeText={handleChange('email')}
                   value={values.email}
                   error={errors.email}
@@ -122,12 +151,15 @@ function LogInScreen(props) {
             )}
 
           </Formik>
+
+      </ScrollView>
+          
       
     );
 }
 const styles = StyleSheet.create({
   container:{
-    paddingVertical:20,
+    paddingVertical:150,
     flex:1,
     alignItems:'center',
     justifyContent:'center'

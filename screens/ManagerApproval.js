@@ -143,7 +143,7 @@ function ManagerApproval(props) {
     // when user press on aprrove button ask him if he sures he wants to approve project,
     //and if he does goes to aprroveProject function
     const handleAprrove =   (item)=>{
-        Alert.alert("","אתה בטוח רוצה לאשר פרויקט זה?",[{text:"ביטול"},{text:"אישור", onPress:()=>approveProject(item)}])
+        Alert.alert("","לאשר פרויקט זה?",[{text:"סגור"},{text:"אישור", onPress:()=>approveProject(item)}])
         
     }
 
@@ -157,7 +157,7 @@ function ManagerApproval(props) {
     }
 
     const handleCancell =   (item)=>{
-        Alert.alert("","אתה בטוח שאתה רוצה לבטל פרויקט זה?",[{text:"ביטול"},{text:"אישור", onPress:()=>removeProject(item)}])
+        Alert.alert("","למחוק פרויקט זה?",[{text:"סגור"},{text:"אישור", onPress:()=>removeProject(item)}])
         
     }
 
