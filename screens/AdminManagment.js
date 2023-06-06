@@ -7,45 +7,17 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { app, db, auth } from "../firebaseConfig";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  onSnapshot,
-  updateDoc,
-} from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { collection, doc, onSnapshot, updateDoc } from "firebase/firestore";
 
 const AdminManagment = () => {
-  const [users,setUsers] = useState([])
-  const [eventUsers,setEventUsers] = useState([])
+  const [users, setUsers] = useState([]);
+  const [eventUsers, setEventUsers] = useState([]);
   const [events, setEvents] = useState([]);
   const userRef = collection(db, "users");
   const projectRef = collection(db, "projects");
-  let subscriber;
 
-//   useEffect(() => {
-//     /// onSnapshot is a lisiting to refTode (collection)
-//     const subscriber = onSnapshot(userRef,{
-//         // next is the callback function the got called evry time the collection is changed
-//         // snapshot is object of the collection that contain the data of the collection (docs)
-//         next:(snapshot)=>{
-//             const users =[]
-//             snapshot.docs.forEach((item) => {
-//                 users.push({
-//                     id:item.id,
-//                     ...item.data()
-//                 })
-//             })
-//             console.log(users);
-//             setUsers(users)
-//         },
-//     })
-//     return () => subscriber();
-//   }, []);
-
-useEffect(() => {
+  useEffect(() => {
     const userSubscriber = onSnapshot(userRef, {
       next: (snapshot) => {
         const users = [];
@@ -58,92 +30,92 @@ useEffect(() => {
         setUsers(users);
       },
     });
-  
+
     const projectSubscriber = onSnapshot(projectRef, {
       next: (snapshot) => {
         const events = [];
         snapshot.docs.forEach((item) => {
-            events.push({
-              id: item.id,
-              ...item.data(),
-            });
-          }
-        );
+          events.push({
+            id: item.id,
+            ...item.data(),
+          });
+        });
         setEvents(events);
       },
     });
-  
+
     return () => {
       userSubscriber();
       projectSubscriber();
     };
   }, []);
-  
 
   const deleteUser = async (user) => {
     console.log(user);
     const userRef = doc(db, `users/${user.id}`);
-    updateDoc(userRef, {isdeleted: true});
+    updateDoc(userRef, { isdeleted: true });
 
     user.myEvents.forEach((event) => {
-        events.forEach(curEvent => {
-            if (curEvent.id == event) {
-                const updateUsers = [];
-                const updateNumParticipants = curEvent.numpraticipants - 1;
-                curEvent.participants.forEach((currUser) => {
-                    if (currUser !== user.email) {
-                        updateUsers.push(currUser);
-                    }
-                })
-                setEventUsers(updateUsers);
-                const projectRef = doc(db, `projects/${curEvent.id}`);
-                updateDoc(projectRef, {participants: updateUsers, numpraticipants: updateNumParticipants});
+      events.forEach((curEvent) => {
+        if (curEvent.id == event) {
+          const updateUsers = [];
+          const updateNumParticipants = curEvent.numpraticipants - 1;
+          curEvent.participants.forEach((currUser) => {
+            if (currUser !== user.email) {
+              updateUsers.push(currUser);
             }
-        })
-    })
+          });
+          setEventUsers(updateUsers);
+          const projectRef = doc(db, `projects/${curEvent.id}`);
+          updateDoc(projectRef, {
+            participants: updateUsers,
+            numpraticipants: updateNumParticipants,
+          });
+        }
+      });
+    });
   };
 
   return (
     <View style={styles.container}>
-        <FlatList
-          data={users}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.itemContainer}>
-              {item.isdeleted === false ? (
-                <View>
-                    <Text style={styles.itemName}>אימייל המשתמש: </Text>
-                    <Text >{item.email}</Text>
-                    <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => {
-                        Alert.alert(
-                            "",
-                            "האם אתה בטוח שאתה רוצה למחוק את המשתמש?",
-                            [
-                            {
-                                text: "לא",
-                                style: "cancel",
-                            },
-                            {
-                                text: "כן",
-                                onPress: () => deleteUser(item),
-                            },
-                            ],
-                            { cancelable: true }
-                        );
-                        }}
-                    >
-                        <Text style={styles.buttonText}>מחיקת משתמש</Text>
-                    </TouchableOpacity>
-                    </View>
+      <FlatList
+        data={users}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.itemContainer}>
+            {item.isdeleted === false ? (
+              <View>
+                <Text style={styles.itemName}>אימייל המשתמש: </Text>
+                <Text>{item.email}</Text>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                      Alert.alert(
+                        "",
+                        "האם אתה בטוח שאתה רוצה למחוק את המשתמש?",
+                        [
+                          {
+                            text: "לא",
+                            style: "cancel",
+                          },
+                          {
+                            text: "כן",
+                            onPress: () => deleteUser(item),
+                          },
+                        ],
+                        { cancelable: true }
+                      );
+                    }}
+                  >
+                    <Text style={styles.buttonText}>מחיקת משתמש</Text>
+                  </TouchableOpacity>
                 </View>
-                ) : null
-              }
-            </View>
-          )}
-        />
+              </View>
+            ) : null}
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -202,6 +174,3 @@ const styles = StyleSheet.create({
 });
 
 export default AdminManagment;
-
-// TODO - ADD DATES CHECK!
-// TODO - UPDATEEVENT - NEED TO SENT THE EVENT.ID TO THE NEW PAGE

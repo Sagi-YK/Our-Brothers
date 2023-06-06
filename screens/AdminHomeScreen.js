@@ -23,7 +23,7 @@ const AdminHomeScreen = () => {
         component={AdminPage}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="MyEvents" component={MyEvents} />
+      <Stack.Screen name="AdminMan" component={AdminManagment} />
       <Stack.Screen name="approval" component={ManagerApproval} />
       <Stack.Screen name="stats" component={StatisticsScreen} />
       <Stack.Screen name="profile" component={ProfileScreen} />
@@ -46,7 +46,7 @@ const AdminPage = ({ navigation }) => {
   };
 
   const goToPage2 = () => {
-    navigation.navigate("MyEvents");
+    navigation.navigate("AdminMan");
   };
 
   const goToPage3 = () => {
