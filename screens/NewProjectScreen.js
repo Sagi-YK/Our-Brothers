@@ -57,7 +57,7 @@ const NewProjectScreen = () => {
     // check if user log-in
     const user = auth.currentUser
     if (!user){
-      Alert.alert("","עליך להתחבר לפני שתוכל ליצור מיזם", [{text: "אישור", onPress: () => navigation.navigate('Profile')}])
+      Alert.alert("","דרושה התחברות למערכת", [{text: "אישור", onPress: () => navigation.navigate('Profile')}])
       return;
     }
 
@@ -118,7 +118,8 @@ const NewProjectScreen = () => {
         'location':projectLocation,
         'status':false,
         'creator':userEmail,
-        'numpraticipants':1
+        'numpraticipants':1,
+        'participants': [userEmail]
       };
   
       // Save the project to the "projects" collection in Firebase
