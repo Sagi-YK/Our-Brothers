@@ -2,19 +2,19 @@
  * this component will display an Our Brother message
  */
 import React , { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity,ScrollView,Modal, Alert } from "react-native";
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity,ScrollView,Modal, Alert ,ImageBackground} from "react-native";
 import{db,auth} from '../firebaseConfig'
 import { collection ,onSnapshot,doc,updateDoc,getDocs} from "@firebase/firestore";
 import { useNavigation } from '@react-navigation/native';
-import { string } from "yup";
+
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 const projectRef = collection(db,'projects') // reference to collection projects
-const usersRef = collection(db,'users') // reference to collection users
+const usersRef = collection(db, "users"); // reference to collection users
 
-
-
+const image = {uri: 'https://img.freepik.com/free-vector/green-fluid-shape-frame-design-resource_53876-168157.jpg?w=740&t=st=1685895245~exp=1685895845~hmac=f58810ba10c87a6c4cf3f2bb3996279f0ca7b5b6bfb16022bd8cdb8332b72148'};
+const image2 = {uri:'https://img.freepik.com/free-photo/background-gradient-lights_23-2149305012.jpg?w=740&t=st=1685896597~exp=1685897197~hmac=d2aab27fae632b3ac35a5a1554662a3d5781b0af9e322c10977a8f7353b8281b'}
 
 
 
@@ -23,6 +23,7 @@ const HomeScreen = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [state,setState] =useState([])
   const navigation = useNavigation();
+ 
 
 
   const handlePress = (event) => {
@@ -43,41 +44,41 @@ const HomeScreen = () => {
     Myparticipants.push(uEmail);
     console.log(Myparticipants);
     // check if we have participants to this project and concat event.participants to  mtparticipants
+    const allData = await getDocs(usersRef);
     let flag=false;
-    if (event.participants)
-    {
-      //loop on all the pariticpants
       
-      event.participants.forEach(item=>{
-        // check if the user allrady sign to the event
-        if(item===uEmail){
-          Alert.alert("","המשתמש כבר רשום למיזם", [{text: "סגור",onPress:() => setModalVisible(false)}])
-          flag=true;
+        allData.forEach(doc=>{
+          if(doc.data().email==uEmail){
+            userId=doc.id;
+           doc.data().myEvents.forEach(currentEvent=>{
+            if(currentEvent === event.id){
+              Alert.alert("","המשתמש כבר רשום למיזם", [{text: "סגור",onPress:() => setModalVisible(false)}])
+              flag=true;
+               return;
+            }
+           }) 
+          }
+         
+        })
+
+        if(flag){
           return;
         }
-        //push the participant to Myparticipants
-        Myparticipants.push(item);
-      })
-      
-    }
-    if(flag){
-      return;
-    }
 
     //update the doc 
     const docRefprojects = doc(db,`projects/${event.id}`)
-    updateDoc(docRefprojects,{participants : Myparticipants}); // update specific filed in the doc
-
+   
     setModalVisible(false);
 
    
 
-    const allData=await getDocs(usersRef);
+    //const allData=await getDocs(usersRef);
     let dealisArray=[];
     let userId;
     console.log("id  "+event.id)
     dealisArray.push(event.id);
     console.log("event  "+event)
+    // add the event to user events
     allData.forEach(doc=>{
       if(doc.data().email==uEmail){
         userId=doc.id;
@@ -130,12 +131,20 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.navBar}>
-        <Text style={styles.text}>Our Brothers</Text>
-      </View>
+      
+      {/* <View style={styles.navBar}> */}
+      {/* <ImageBackground source={image2}  style={styles.image2}> */}
+        {/* <Text style={styles.text}>Our Brothers</Text> */}
+        {/* </ImageBackground> */}
+      {/* </View> */}
+     
+      <ImageBackground source={image}  style={styles.image}> 
       <ScrollView style={styles.Scroll}>
+      
         <View style={styles.mainPage}>
+       
           {state.map((event) => (
+            
             <TouchableOpacity
               key={event.id}
               style={styles.Eventbutton}
@@ -148,7 +157,9 @@ const HomeScreen = () => {
             </TouchableOpacity>
           ))}
         </View>
+       
       </ScrollView>
+      </ImageBackground>
 
       {selectedEvent && (
       
@@ -198,7 +209,7 @@ const HomeScreen = () => {
       alignItems: 'center',
       justifyContent: 'center',
       // backgroundColor: '#87ceeb',
-      
+      backgroundColor: "rgba(0, 0, 0, 0)", // Transparent background
     },
     mainPage: {
       // flex: 7,
@@ -211,6 +222,18 @@ const HomeScreen = () => {
       justifyContent: 'center',
       // backgroundColor: 'red ',
     },
+    image: {
+      flex: 1,
+      resizeMode: 'cover',
+      
+    },
+    image2: {
+      flex: 1,
+      // height: deviceHeight,
+      resizeMode: 'cover',
+      
+    },
+ 
     Scroll:{
       paddingTop: 0
     },
@@ -232,13 +255,13 @@ const HomeScreen = () => {
     Eventbutton: {
       width: deviceWidth - 40,
     height: 80,
-    backgroundColor: '#72A0C1',
+    backgroundColor: '#0c2e63',
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
     margin: 15,
     borderWidth: 2,
-    borderColor: '#ffffff',
+    borderColor: '#00a099',
     position: 'relative',
     overflow: 'hidden',
     },
