@@ -130,9 +130,9 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.navBar}>
+      {/* <View style={styles.navBar}>
         <Text style={styles.text}>Our Brothers</Text>
-      </View>
+      </View> */}
       <ScrollView style={styles.Scroll}>
         <View style={styles.mainPage}>
           {state.map((event) => (

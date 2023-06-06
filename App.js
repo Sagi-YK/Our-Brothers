@@ -13,7 +13,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName='Home' backBehavior='history' screenOptions={{
-        headerShown: false,
+        // headerShown: false,
         tabBarStyle: {
           height: '10%',
           justifyContent: 'center',
@@ -25,12 +25,26 @@ export default function App() {
           name='Profile'
           component={ProfileScreen}
           options={{
+            headerStyle: {
+              backgroundColor: '#f5f5f5',
+            },
+            headerTitleStyle: {
+              color: '#00a099',
+              fontWeight: 'bold',
+              fontSize: 35,
+            },
+            headerTitleContainerStyle: {
+              alignItems: 'center',
+              width: '100%',
+            },
+            headerShown: true,
+            headerTitle: 'האחים שלנו',
             tabBarLabel: () => null,
             tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='account' color={color} size={30} />)
           }}
         />
         <Tab.Screen
-          name="מיזם חדש"
+          name="newProject"
           component={NewProjectScreen}
           options={({navigation}) => ({
             headerStyle: {
@@ -45,16 +59,31 @@ export default function App() {
               width: '100%',
             },
             headerShown: true,
+            headerTitle: 'מיזם חדש',
             headerLeft: () => <BackButton navigation={navigation} />,
             tabBarLabel: () => null,
             tabBarStyle: {display: 'none'},
-            tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='plus-circle' color={'#33B8FF'} size={60} />),
+            tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='plus-circle' color={'#00a099'} size={60} />),
           })}
         />
         <Tab.Screen
           name='Home'
           component={HomeScreen}
           options={{
+            headerStyle: {
+              backgroundColor: '#f5f5f5',
+            },
+            headerTitleStyle: {
+              color: '#00a099',
+              fontWeight: 'bold',
+              fontSize: 35,
+            },
+            headerTitleContainerStyle: {
+              alignItems: 'center',
+              width: '100%',
+            },
+            headerShown: true,
+            headerTitle: 'האחים שלנו',
             tabBarLabel: () => null,
             tabBarIcon: ({color, size}) => (<MaterialCommunityIcons name='home' color={color} size={30} />)
           }}
