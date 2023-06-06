@@ -89,8 +89,8 @@ const MyEvents = () => {
       }
     });
     updateDoc(itemRef, { myEvents: remainEvents });
-    user['myEvents'] = remainEvents
-    setUser(user)
+    user["myEvents"] = remainEvents;
+    setUser(user);
 
     // let user = {};
     //     querySnapshot.forEach((doc) => {
@@ -101,15 +101,26 @@ const MyEvents = () => {
     //       }
     //     });
 
-    let updatedEvents = [];
-    events.forEach((updateOneEvent) => {
-      remainEvents.forEach((eve) => {
-        if (eve === updateOneEvent.id) {
-          updatedEvents.push(updateOneEvent);
-        }
-      });
-    });
-    setEvents(updatedEvents);
+    setEvents(
+      events.filter((val) => {
+        return val.id !== item.id;
+      })
+    );
+
+    // let updatedEvents = [];
+    // events.forEach((updateOneEvent) => {
+    //   remainEvents.forEach((eve) => {
+    //     if (eve === updateOneEvent.id) {
+    //       updatedEvents.push(updateOneEvent);
+    //     }
+    //   });
+    // });
+    // setEvents(updatedEvents);
+  };
+
+  const formatTime = (time) => {
+    const date = new Date(time.seconds * 1000);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   return (
@@ -129,7 +140,9 @@ const MyEvents = () => {
               {item.time == undefined ? (
                 <Text style={styles.itemTime}> טרם נקבע שעה </Text>
               ) : (
-                <Text style={styles.itemTime}>שעה: {item.time}</Text>
+                <Text style={styles.itemTime}>
+                  שעה: {formatTime(item.time)}
+                </Text>
               )}
 
               {item.creator === userEmail ? (
