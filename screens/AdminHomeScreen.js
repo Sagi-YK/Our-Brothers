@@ -2,37 +2,72 @@
  * this component will display the home page for the admin
  */
 
-import React from "react";
-import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import MyEvents from "./MyEvents";
+import ProfileScreen from "./ProfileScreen";
+import LoginNavScreen from "./LoginNavScreen";
+import StatisticsScreen from "./StatisticsScreen";
+import ManagerApproval from "./ManagerApproval";
+import React, { useEffect, useState } from "react";
+import { auth } from "../firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
-const AdminHomeScreen = ({ navigation }) => {
+const Stack = createStackNavigator();
+
+const AdminHomeScreen = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="MyProfile"
+        component={AdminPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="MyEvents" component={MyEvents} />
+      <Stack.Screen name="approval" component={ManagerApproval} />
+      <Stack.Screen name="stats" component={StatisticsScreen} />
+      <Stack.Screen name="profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const AdminPage = ({ navigation }) => {
   const goToPage1 = () => {
-    navigation.navigate("Page1");
+    Alert.alert("", "להמשיך בתהליך התנתקות?", [
+      {
+        text: "אישור",
+        onPress: () => {
+          auth.signOut();
+          navigation.navigate("profile");
+        },
+      },
+      { text: "ביטול" },
+    ]);
   };
 
   const goToPage2 = () => {
-    navigation.navigate("Page2");
+    navigation.navigate("MyEvents");
   };
 
   const goToPage3 = () => {
-    navigation.navigate("Page3");
+    navigation.navigate("approval");
   };
 
   const goToPage4 = () => {
-    navigation.navigate("Page4");
+    navigation.navigate("stats");
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.containerHead}>
-        <Text style={styles.headText}>שלום</Text>
+        <Text style={styles.headText}>שלום מנהל</Text>
       </View>
       <View style={styles.containerButtons}>
         <TouchableOpacity style={styles.button} onPress={goToPage1}>
-          <Text style={styles.buttonText}>צור מיזם</Text>
+          <Text style={styles.buttonText}>התנתקות </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={goToPage2}>
-          <Text style={styles.buttonText}>רשימת מיזמים</Text>
+          <Text style={styles.buttonText}>ניהול משתמשים</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={goToPage3}>
           <Text style={styles.buttonText}>אישור מיזמים</Text>
