@@ -4,14 +4,12 @@
 
 import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import MyEvents from "./MyEvents";
 import ProfileScreen from "./ProfileScreen";
-import LoginNavScreen from "./LoginNavScreen";
 import StatisticsScreen from "./StatisticsScreen";
 import ManagerApproval from "./ManagerApproval";
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import AdminManagment from "./AdminManagment";
 
 const Stack = createStackNavigator();
 
@@ -23,7 +21,7 @@ const AdminHomeScreen = () => {
         component={AdminPage}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="AdminMan" component={AdminManagment} />
+      <Stack.Screen name="UsersManagment" component={AdminManagment} />
       <Stack.Screen name="approval" component={ManagerApproval} />
       <Stack.Screen name="stats" component={StatisticsScreen} />
       <Stack.Screen name="profile" component={ProfileScreen} />
@@ -46,7 +44,7 @@ const AdminPage = ({ navigation }) => {
   };
 
   const goToPage2 = () => {
-    navigation.navigate("AdminMan");
+    navigation.navigate("UsersManagment");
   };
 
   const goToPage3 = () => {

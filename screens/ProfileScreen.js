@@ -8,14 +8,24 @@ import MyEvents from "./MyEvents";
 import UpdateData from "./UpdateData";
 import LoginNavScreen from "./LoginNavScreen";
 import React, { useEffect, useState } from "react";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+import { collection, getDocs } from "firebase/firestore";
 
 const Stack = createStackNavigator();
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      // Navigate to "MyProfile"
+      navigation.navigate("MyProfile");
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="MyProfile">
       <Stack.Screen
         name="MyProfile"
         component={ProfilePage}
@@ -27,13 +37,14 @@ const ProfileScreen = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="MyEvents" component={MyEvents} />
-      <Stack.Screen name="UpdateData" component={UpdateData} />
+      {/* <Stack.Screen name="UpdateData" component={UpdateData} /> */}
     </Stack.Navigator>
   );
 };
 
 const ProfilePage = ({ navigation }) => {
   const [login, setLogin] = useState(false);
+  const [name, setName] = useState("");
 
   const goToPage1 = () => {
     navigation.navigate("LogIn");
@@ -48,9 +59,9 @@ const ProfilePage = ({ navigation }) => {
     }
   };
 
-  const goToPage3 = () => {
-    navigation.navigate("UpdateData");
-  };
+  // const goToPage3 = () => {
+  //   navigation.navigate("UpdateData");
+  // };
 
   const goToPage4 = () => {
     Alert.alert("", "להמשיך בתהליך התנתקות?", [
@@ -68,9 +79,21 @@ const ProfilePage = ({ navigation }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in
+        const func = async () => {
+          const userRef = collection(db, "/users");
+          const userEmail = user.email;
+          const allUsers = await getDocs(userRef);
+          allUsers.forEach((doc) => {
+            if (doc.data().email == userEmail) {
+              setName(doc.data().name);
+            }
+          });
+        };
+        func();
         setLogin(true);
       } else {
         // User is signed out
+        setName("");
         setLogin(false);
       }
     });
@@ -82,7 +105,11 @@ const ProfilePage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.containerHead}>
-        <Text style={styles.headText}>שלום</Text>
+        {!login ? (
+          <Text style={styles.headText}>היי</Text>
+        ) : (
+          <Text style={styles.headText}>היי {name}</Text>
+        )}
       </View>
       <View style={styles.containerButtons}>
         {!login ? (
@@ -98,9 +125,9 @@ const ProfilePage = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={goToPage2}>
           <Text style={styles.buttonText}>המיזמים שלי</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={goToPage3}>
+        {/* <TouchableOpacity style={styles.button} onPress={goToPage3}>
           <Text style={styles.buttonText}>עדכון פרטים</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -147,4 +174,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default ProfileScreen;
