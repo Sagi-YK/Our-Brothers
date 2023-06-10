@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View,StyleSheet,Text,ScrollView,Modal,TouchableOpacity } from 'react-native';
+import { View,StyleSheet,Text,ScrollView,Modal,TouchableOpacity,Platform,Dimensions } from 'react-native';
 import { db } from '../firebaseConfig';
 import { collection, onSnapshot } from '@firebase/firestore';
+const deviceWidth = Dimensions.get("window").width;
 
 function StatisticsScreen(props) 
 {
@@ -193,415 +194,398 @@ function StatisticsScreen(props)
         }
     },[])
 
+    const toggleModal = () => {
+  setModalVisible(!isModalVisible);
+};
+
     return (
-        // <Modal animationType="slide" transparent={true} visible={modalVisible}>
-  
-            <View style = {styles.container}>
+
+
+                    <View style={styles.container}>
+                    <View style= {styles.maintext}>
+                         <Text style = {styles.titletext}>כמות פרויקטים : {statistics[0]} </Text>
+                     </View>
+
+                     <View style= {styles.maintext}>
+                         <Text style = {styles.titletext}>כמות פרויקטים פעילים : {statistics[1]} </Text>
+                     </View>
+
+                     <View style= {styles.maintext}>
+                         <Text style = {styles.titletext}>כמות משתמשים : {user_statistics} </Text>
+                     </View>
+                    <TouchableOpacity style={styles.maintext} onPress={toggleModal}>
+                    <Text style = {styles.titletext}> לחץ כאן לעוד סטטסטיקה   </Text>
+                    </TouchableOpacity>
+
+                    {/* Other statistics */}
+                  
+                
                 <ScrollView>
-                    <View style= {styles.textContainer}>
-                        <Text style = {styles.titletext}>כמות פרויקטים : {statistics[0]} </Text>
-                    </View>
-
-                    <View style= {styles.textContainer}>
-                        <Text style = {styles.titletext}>כמות פרויקטים פעילים : {statistics[1]} </Text>
-                    </View>
-
-                    <View style= {styles.textContainer}>
-                        <Text style = {styles.titletext}>כמות משתמשים : {user_statistics} </Text>
-                    </View>
-                    <View style= {styles.textContainer}>
-                        <Text style = {styles.titletext}>אחוז משתתפים  לכל מיזם לפי סוג  : </Text>
-                    </View>
-                 
-                        {catgory_statistics.map((item,index)=>{
+                <Modal
+                    visible={isModalVisible}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={toggleModal}
+                >
+                    <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                                    <ScrollView>
+                                     {catgory_statistics.map((item,index)=>{
                             
-                            let number =  (item/num_of_particanptns*100).toFixed(2)
-                            if (isNaN(number))
-                            {
-                                number=0
-                            }
-                            if(index==0)
-                            {
-                                return<View style= {styles.textContainer} key={'טכנולוגיה'}>
-                                <Text style = {styles.text}> מיזמי טכנולוגיה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==1)
-                            {
-                                return<View style= {styles.textContainer}  key={'ספורט'}>
-                                <Text style = {styles.text} > מיזמי ספורט : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==2)
-                            {
-                                return<View style= {styles.textContainer}  key={'בריאות'}>
-                                <Text style = {styles.text} > מיזמי בריאות : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==3)
-                            {
-                                return<View style= {styles.textContainer}  key={'מוזיקה'}>
-                                <Text style = {styles.text} > מיזמי מוזיקה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==4)
-                            {
-                                return<View style= {styles.textContainer}  key={'ריקוד'}>
-                                <Text style = {styles.text} > מיזמי ריקוד : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==5)
-                            {
-                                return<View style= {styles.textContainer}  key={'תזונה'}>
-                                <Text style = {styles.text} > מיזמי תזונה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==6)
-                            {
-                                return<View style= {styles.textContainer}  key={'מפגשים'}>
-                                <Text style = {styles.text} > מיזמי מפגשים : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==7)
-                            {
-                                return<View style= {styles.textContainer}  key={'קריאה וכתיבה'}>
-                                <Text style = {styles.text} > מיזמי קריאה וכתיבה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==8)
-                            {
-                                return<View style= {styles.textContainer}  key={'התנדבות'}>
-                                <Text style = {styles.text} > מיזמי התנדבות : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==9)
-                            {
-                                return<View style= {styles.textContainer}  key={'גמ"ח'}>
-                                <Text style = {styles.text} > מיזמי גמ"ח : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==10)
-                            {
-                                return<View style= {styles.textContainer}  key={'עמותה'}>
-                                <Text style = {styles.text} > מיזמי עמותה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==11)
-                            {
-                                return<View style= {styles.textContainer}  key={'אירוע'}>
-                                <Text style = {styles.text} > מיזמי אירוע : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==12)
-                            {
-                                return<View style= {styles.textContainer}  key={'שטח'}>
-                                <Text style = {styles.text} > במיזמי שטח : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==13)
-                            {
-                                return<View style= {styles.textContainer}  key={'בינלאומי'}>
-                                <Text style = {styles.text} > מיזמי בינלאומי : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==14)
-                            {
-                                return<View style= {styles.textContainer}  key={'טיפולי'}>
-                                <Text style = {styles.text} > מיזמי טיפולי : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==15)
-                            {
-                                return<View style= {styles.textContainer}  key={'בידור'}>
-                                <Text style = {styles.text} > מיזמי בידור : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==16)
-                            {
-                                return<View style= {styles.textContainer}  key={'אופנה'}>
-                                <Text style = {styles.text}> מיזמי אופנה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==17)
-                            {
-                                return<View style= {styles.textContainer} key={'משפטי'}>
-                                <Text style = {styles.text}> מיזמי משפטי : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==18)
-                            {
-                                return<View style= {styles.textContainer}  key={'חינוך'}>
-                                <Text style = {styles.text} > מיזמי חינוך : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==19)
-                            {
-                                return<View style= {styles.textContainer}  key={'שירותים חברתיים'}>
-                                <Text style = {styles.text} >   מיזמי שירותים חברתיים : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==20)
-                            {
-                                return<View style= {styles.textContainer}  key={'שירותים חינמיים'}>
-                                <Text style = {styles.text} > מיזמי שירותים חינמיים : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==21)
-                            {
-                                return<View style= {styles.textContainer}  key={'כלכלי'}>
-                                <Text style = {styles.text} > מיזמי כלכלי : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==22)
-                            {
-                                return<View style= {styles.textContainer}  key={'תחבורה'}>
-                                <Text style = {styles.text} > מיזמי תחבורה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==23)
-                            {
-                                return<View style= {styles.textContainer}  key={'בעלי חיים'}>
-                                <Text style = {styles.text} > מיזמי בעלי חיים : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==24)
-                            {
-                                return<View style= {styles.textContainer}  key={'חברה ורוח'}>
-                                <Text style = {styles.text} > מיזמי חברה ורוח : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==25)
-                            {
-                                return<View style= {styles.textContainer}  key={'תקשורת'}>
-                                <Text style = {styles.text} > מיזמי תקשורת : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==26)
-                            {
-                                return<View style= {styles.textContainer}  key={'בנייה ושיפוץ'}>
-                                <Text style = {styles.text} > מיזמי בנייה ושיפוץ : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==27)
-                            {
-                                return<View style= {styles.textContainer}  key={'פנאי'}>
-                                <Text style = {styles.text} > מיזמי פנאי : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==28)
-                            {
-                                return<View style= {styles.textContainer}  key={'ילדים ונוער'}>
-                                <Text style = {styles.text} > מיזמי ילדים ונוער : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==29)
-                            {
-                                return<View style= {styles.textContainer}  key={'קבוצה'}>
-                                <Text style = {styles.text} > מיזמי קבוצה : {number} % </Text>
-                                </View> 
-                            }
-                            else if(index==30)
-                            {
-                                return<View style= {styles.textContainer}  key={'פוליטיקה'}>
-                                <Text style = {styles.text} > מיזמי פוליטיקה : {number} % </Text>
-                                </View> 
-                            }
-                            else 
-                            {
-                                return<View style= {styles.textContainer}  key={'אחר'}>
-                                <Text style = {styles.text} > מיזמי אחר : {number} % </Text>
-                                </View> 
-                            }
-                    
-                    })}
+                                                let number =  (item/num_of_particanptns*100).toFixed(2)
+                                                if (isNaN(number))
+                                                {
+                                                    number=0
+                                                }
+                                                if(index==0)
+                                                {
+                                                    return<View style= {styles.textContainer} key={'טכנולוגיה'}>
+                                                    <Text style= {styles.text} > מיזמי טכנולוגיה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==1)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'ספורט'}>
+                                                    <Text style= {styles.text} > מיזמי ספורט : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==2)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'בריאות'}>
+                                                    <Text style= {styles.text} > מיזמי בריאות : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==3)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'מוזיקה'}>
+                                                    <Text style= {styles.text} > מיזמי מוזיקה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==4)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'ריקוד'}>
+                                                    <Text style= {styles.text}  > מיזמי ריקוד : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==5)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'תזונה'}>
+                                                    <Text style= {styles.text} > מיזמי תזונה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==6)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'מפגשים'}>
+                                                    <Text style= {styles.text}  > מיזמי מפגשים : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==7)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'קריאה וכתיבה'}>
+                                                    <Text style= {styles.text} > מיזמי קריאה וכתיבה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==8)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'התנדבות'}>
+                                                    <Text style= {styles.text} > מיזמי התנדבות : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==9)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'גמ"ח'}>
+                                                    <Text style= {styles.text}  > מיזמי גמ"ח : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==10)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'עמותה'}>
+                                                    <Text style= {styles.text}  > מיזמי עמותה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==11)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'אירוע'}>
+                                                    <Text style= {styles.text}  > מיזמי אירוע : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==12)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'שטח'}>
+                                                    <Text style= {styles.text} > מיזמי שטח : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==13)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'בינלאומי'}>
+                                                    <Text style= {styles.text} > מיזמי בינלאומי : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==14)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'טיפולי'}>
+                                                    <Text style= {styles.text}  > מיזמי טיפולי : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==15)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'בידור'}>
+                                                    <Text style= {styles.text} > מיזמי בידור : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==16)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'אופנה'}>
+                                                    <Text style= {styles.text} > מיזמי אופנה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==17)
+                                                {
+                                                    return<View style= {styles.textContainer} key={'משפטי'}>
+                                                    <Text style= {styles.text} > מיזמי משפטי : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==18)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'חינוך'}>
+                                                    <Text style= {styles.text} > מיזמי חינוך : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==19)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'שירותים חברתיים'}>
+                                                    <Text style= {styles.text}>   מיזמי שירותים חברתיים : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==20)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'שירותים חינמיים'}>
+                                                    <Text style= {styles.text}  > מיזמי שירותים חינמיים : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==21)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'כלכלי'}>
+                                                    <Text style= {styles.text}  > מיזמי כלכלי : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==22)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'תחבורה'}>
+                                                    <Text style= {styles.text}  > מיזמי תחבורה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==23)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'בעלי חיים'}>
+                                                    <Text style= {styles.text} > מיזמי בעלי חיים : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==24)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'חברה ורוח'}>
+                                                    <Text style= {styles.text}  > מיזמי חברה ורוח : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==25)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'תקשורת'}>
+                                                    <Text style= {styles.text} > מיזמי תקשורת : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==26)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'בנייה ושיפוץ'}>
+                                                    <Text style= {styles.text} > מיזמי בנייה ושיפוץ : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==27)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'פנאי'}>
+                                                    <Text  style= {styles.text} > מיזמי פנאי : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==28)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'ילדים ונוער'}>
+                                                    <Text style= {styles.text}  > מיזמי ילדים ונוער : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==29)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'קבוצה'}>
+                                                    <Text style= {styles.text} > מיזמי קבוצה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else if(index==30)
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'פוליטיקה'}>
+                                                    <Text style= {styles.text} > מיזמי פוליטיקה : {number} % </Text>
+                                                    </View> 
+                                                }
+                                                else 
+                                                {
+                                                    return<View style= {styles.textContainer}  key={'אחר'}>
+                                                    <Text style= {styles.text}  > מיזמי אחר : {number} % </Text>
+                                                    </View> 
+                                                }
+                                        
+                                        })}
+                       
 
-                </ScrollView>        
-            </View>
-      
+                    <TouchableOpacity onPress={toggleModal}>
+                    <Text style={styles.speacil}>סגור</Text>
+                    </TouchableOpacity>
+                    </ScrollView>
+                    </View>
+                    </View>
+                </Modal>
+                </ScrollView>
+                </View>
 
           
      );
 }
+
+
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        paddingTop:40,
-        //justifyContent:'center',
-        alignItems:'center',
-    },
-    textContainer:{
-         width:'100%',
-        height:50,
-        justifyContent:'center',
-        //alignItems:'center',
-        backgroundColor:'white',
-        marginBottom:20,
-        paddingRight:30,
+  container: {
+    flex: 1,
+    padding: 20,
+    paddingTop: 80,
+  },
+  speacil:
+  {
+     marginTop: 20,
+    color: 'blue',
+    fontSize:13,
+    fontWeight:'700',
+     alignItems : 'center',
+     justifyContent: 'center',
+    // position: 'absolute',
+    // bottom:-10,
+    //right: Platform.OS==='android'? '50%':null,
+    left: Platform.OS === 'ios'? '45%':'42%'
 
+  },
 
-        
-    },
-    text:{
+     textContainer:{
+ 
+        marginTop: 30,
         color: 'black',
         fontSize:13,
         fontWeight:'700',
         // backgroundColor: '##ADD8E6',
-        borderRadius: 20,
+        borderRadius: 7,
         borderWidth: 2,
         borderColor: '#00a099',
         paddingRight: 10,
-        
-    },
-    titletext:
-    {
-        color: 'black',
-        fontSize:16,
-        fontWeight:'700',
-        paddingRight: 10,
-        // backgroundColor: '##ADD8E6',
-        borderRadius: 20,
-        borderWidth: 2,
-        borderColor: '#00a099',
-        alignContent: 'center',
-        justifyContent: 'center',
-        alignItems: 'center'
+     },
 
-    }
+     maintext:{
+        
+        padding: 40,
+        marginTop: 30,
+        color: 'black',
+        fontSize:13,
+        fontWeight:'700',
+        // backgroundColor: '##ADD8E6',
+        borderRadius: 7,
+        borderWidth: 2,
+        borderColor: '#00a099',
+        justifyContent: 'center',
+        alignItems: 'center',
+   
+     },
+  titletext: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    paddingRight: 10,  
+    // alignItems: 'center',
+    // justifyContent: 'center',
+
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    //justifyContent: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: 'blue',
+  },
+
+      text:{
+        
+         textAlign: Platform.OS === 'ios'? 'right':null,
+
+
+    },
+});
+
+
+
+
+// const styles = StyleSheet.create({
+//     container:{
+//         flex:1,
+//         paddingTop:40,
+//         //justifyContent:'center',
+//         alignItems:'center',
+//     },
+//     textContainer:{
+//          width:'100%',
+//         height:50,
+//         justifyContent:'center',
+//         //alignItems:'center',
+//         backgroundColor:'white',
+//         marginBottom:20,
+//         paddingRight:30,
+
+
+        
+//     },
+//     text:{
+//         color: 'black',
+//         fontSize:13,
+//         fontWeight:'700',
+//         // backgroundColor: '##ADD8E6',
+//         borderRadius: 7,
+//         borderWidth: 2,
+//         borderColor: '#00a099',
+//         paddingRight: 10,
+        
+//     },
+//     titletext:
+//     {
+//         color: 'black',
+//         fontSize:16,
+//         fontWeight:'700',
+//         paddingRight: 10,
+//         // backgroundColor: '##ADD8E6',
+//         borderRadius: 7,
+//         borderWidth: 2,
+//         borderColor: '#00a099',
+//         alignContent: 'center',
+//         justifyContent: 'center',
+//         alignItems: 'center'
+
+//     }
+
     
-})
+// })
 
 export default StatisticsScreen;
 
-
-      // switch(index)
-                        // {
-                        //     case 0:
-                        //         return<View style= {styles.textContainer} key={'טכנולוגיה'}>
-                        //         <Text style = {styles.text}> מיזמי טכנולוגיה : {item/num_of_particanptns*100} % </Text>
-                        //         </View> 
-                        //     case 1:
-                        //         return<View style= {styles.textContainer}  key={'ספורט'}>
-                        //         <Text style = {styles.text} > מיזמי ספורט : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 2:
-                        //         return<View style= {styles.textContainer}  key={'בריאות'}>
-                        //         <Text style = {styles.text} > מיזמי בריאות : {item/num_of_particanptns*100} % </Text>
-                        //         </View> 
-                        //     case 3:
-                        //         return<View style= {styles.textContainer}  key={'מוזיקה'}>
-                        //         <Text style = {styles.text} > מיזמי מוזיקה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 4:
-                        //         return<View style= {styles.textContainer}  key={'ריקוד'}>
-                        //         <Text style = {styles.text} > מיזמי ריקוד : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 5:
-                        //         return<View style= {styles.textContainer}  key={'תזונה'}>
-                        //         <Text style = {styles.text} > מיזמי תזונה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 6:
-                        //         return<View style= {styles.textContainer}  key={'מפגשים'}>
-                        //         <Text style = {styles.text} > מיזמי מפגשים : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 7: 
-                        //         return<View style= {styles.textContainer}  key={'קריאה וכתיבה'}>
-                        //         <Text style = {styles.text} > מיזמי קריאה וכתיבה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 8:
-                        //         return<View style= {styles.textContainer}  key={'התנדבות'}>
-                        //         <Text style = {styles.text} > מיזמי התנדבות : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 9:
-                        //         return<View style= {styles.textContainer}  key={'גמ"ח'}>
-                        //         <Text style = {styles.text} > מיזמי גמ"ח : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 10:
-                        //         return<View style= {styles.textContainer}  key={'עמותה'}>
-                        //         <Text style = {styles.text} > מיזמי עמותה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 11:
-                        //         return<View style= {styles.textContainer}  key={'אירוע'}>
-                        //         <Text style = {styles.text} > מיזמי אירוע : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 12:
-                        //         return<View style= {styles.textContainer}  key={'שטח'}>
-                        //         <Text style = {styles.text} > במיזמי שטח : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 13:
-                        //         return<View style= {styles.textContainer}  key={'בינלאומי'}>
-                        //         <Text style = {styles.text} > מיזמי בינלאומי : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 14:
-                        //         return<View style= {styles.textContainer}  key={'טיפולי'}>
-                        //         <Text style = {styles.text} > מיזמי טיפולי : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 15:
-                        //         return<View style= {styles.textContainer}  key={'בידור'}>
-                        //         <Text style = {styles.text} > מיזמי בידור : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 16:
-                        //         return<View style= {styles.textContainer}  key={'אופנה'}>
-                        //         <Text style = {styles.text}> מיזמי אופנה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 17:
-                        //         return<View style= {styles.textContainer} key={'משפטי'}>
-                        //         <Text style = {styles.text}> מיזמי משפטי : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 18:
-                        //         return<View style= {styles.textContainer}  key={'חינוך'}>
-                        //         <Text style = {styles.text} > מיזמי חינוך : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 19:
-                        //         return<View style= {styles.textContainer}  key={'שירותים חברתיים'}>
-                        //         <Text style = {styles.text} >   מיזמי שירותים חברתיים : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 20:
-                        //         return<View style= {styles.textContainer}  key={'שירותים חינמיים'}>
-                        //         <Text style = {styles.text} > מיזמי שירותים חינמיים : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 21: 
-                        //         return<View style= {styles.textContainer}  key={'כלכלי'}>
-                        //         <Text style = {styles.text} > מיזמי כלכלי : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 22:
-                        //         return<View style= {styles.textContainer}  key={'תחבורה'}>
-                        //         <Text style = {styles.text} > מיזמי תחבורה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 23:
-                        //         return<View style= {styles.textContainer}  key={'בעלי חיים'}>
-                        //         <Text style = {styles.text} > מיזמי בעלי חיים : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 24:
-                        //         return<View style= {styles.textContainer}  key={'חברה ורוח'}>
-                        //         <Text style = {styles.text} > מיזמי חברה ורוח : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 25:
-                        //         return<View style= {styles.textContainer}  key={'תקשורת'}>
-                        //         <Text style = {styles.text} > מיזמי תקשורת : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 26:
-                        //         return<View style= {styles.textContainer}  key={'בנייה ושיפוץ'}>
-                        //         <Text style = {styles.text} > מיזמי בנייה ושיפוץ : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 27:
-                        //         return<View style= {styles.textContainer}  key={'פנאי'}>
-                        //         <Text style = {styles.text} > מיזמי פנאי : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     case 28:
-                        //         return<View style= {styles.textContainer}  key={'ילדים ונוער'}>
-                        //         <Text style = {styles.text} > מיזמי ילדים ונוער : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 29:
-                        //         return<View style= {styles.textContainer}  key={'קבוצה'}>
-                        //         <Text style = {styles.text} > מיזמי קבוצה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>   
-                        //     case 30: 
-                        //         return<View style= {styles.textContainer}  key={'פוליטיקה'}>
-                        //         <Text style = {styles.text} > מיזמי פוליטיקה : {item/num_of_particanptns*100} % </Text>
-                        //         </View>  
-                        //     default:
-                        //         return<View style= {styles.textContainer}  key={'אחר'}>
-                        //         <Text style = {styles.text} > מיזמי אחר : {item/num_of_particanptns*100} % </Text>
-                        //         </View> 
-                            
-                        // }
