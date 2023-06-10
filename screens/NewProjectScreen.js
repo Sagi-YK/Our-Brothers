@@ -16,9 +16,9 @@ const NewProjectScreen = () => {
   const [projectDescription, setProjectDescription] = useState('');
   const [maxNumber, setMaxNumber] = useState('');
   const [minNumber, setMinNumber] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(null);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [projectLocation, setProjectLocation] = useState('');
   const [fieldValidations, setFieldValidations] = useState({
@@ -28,11 +28,10 @@ const NewProjectScreen = () => {
     projectDescription: true,
     maxNumber: true,
     minNumber: true,
-    projectLocation: true,
   });
 
   const handleDateChange = (event, date) => {
-    if (date !== undefined) {
+    if (event.type === 'set') {
       setSelectedDate(date);
     }
     setShowPicker(false);
@@ -43,7 +42,7 @@ const NewProjectScreen = () => {
   };
 
   const handleTimeChange = (event, time) => {
-    if (time !== undefined) {
+    if (event.type === 'set') {
       setSelectedTime(time);
     }
     setShowTimePicker(false);
@@ -69,7 +68,6 @@ const NewProjectScreen = () => {
       projectDescription: true,
       maxNumber: true,
       minNumber: true,
-      projectLocation: true,
     });
 
     if (projectCategory.trim() === '') {
@@ -83,8 +81,7 @@ const NewProjectScreen = () => {
       advertiserName.trim() === '' ||
       projectDescription.trim() === '' ||
       maxNumber.trim() === '' ||
-      minNumber.trim() === '' ||
-      projectLocation.trim() === ''
+      minNumber.trim() === ''
     ) {
       // Set the validation status for each empty field to false
       setFieldValidations(prevValidations => ({
@@ -99,6 +96,18 @@ const NewProjectScreen = () => {
       }));
 
       console.log('Please fill in all fields');
+      return;
+    }
+
+    const maxNum = parseInt(maxNumber, 10);
+    const minNum = parseInt(minNumber, 10);
+    if (maxNum < minNum) {
+      Alert.alert("אופס!","כמות המשתתפים המקסימלית צריכה להיות גדולה מכמות המשתתפים המינימלית!", [{text: "אישור",}])
+      setFieldValidations(prevValidations => ({
+        ...prevValidations,
+        maxNumber: false,
+        minNumber: false
+      }));
       return;
     }
 
@@ -133,8 +142,8 @@ const NewProjectScreen = () => {
       setProjectDescription('');
       setMaxNumber('');
       setMinNumber('');
-      setSelectedDate(new Date());
-      setSelectedTime(new Date());
+      setSelectedDate(null);
+      setSelectedTime(null);
       setProjectLocation('');
 
       const userRef = collection(db, "users");
@@ -196,8 +205,9 @@ const NewProjectScreen = () => {
           ]}
           value={projectDescription}
           onChangeText={setProjectDescription}
-          maxLength={200}
+          maxLength={500}
           multiline={true}
+          placeholder='עד 500 תווים'
         />
         <View>
           <View style={{flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between'}}>
@@ -228,52 +238,60 @@ const NewProjectScreen = () => {
               />
           </View>
         </View>
-        <View>
-          <Text style={styles.label}>תאריך:</Text>
-          <Text style={styles.selectedDate}>{selectedDate.toLocaleDateString()}</Text>
+        <View style={{alignItems: 'flex-end'}}>
+          <Text style={styles.label}>תאריך (לא חובה):</Text>
+          {selectedDate ? (
+            <Text style={styles.selectedDate}>{selectedDate.toLocaleDateString()}</Text>
+          ) : (
+            <Text style={styles.selectedDate}>לא נבחר תאריך</Text>
+          )}
           <TouchableOpacity
             onPress={handleShowPicker}
-            style={[styles.appDateButtonContainer, {backgroundColor: "#708090", width: 130}]}
+            activeOpacity={0.7}
+            style={styles.appDateButtonContainer}
           >
-            <Text style={styles.appButtonTextDate}>בחר תאריך</Text>
+            <Text style={styles.appButtonText}>בחר תאריך</Text>
           </TouchableOpacity>
           {showPicker && (
             <DateTimePicker
-              value={selectedDate}
+              value={selectedDate || new Date()}
               mode="date"
               display="default"
               onChange={handleDateChange}
             />
           )}
         </View>
-        <View>
-          <Text style={styles.label}>שעה:</Text>
-          <Text style={styles.selectedTime}>{selectedTime.toLocaleTimeString()}</Text>
+        <View style={{alignItems: 'flex-end'}}>
+          <Text style={styles.label}>שעה (לא חובה):</Text>
+          {selectedTime ? (
+            <Text style={styles.selectedDate}>{selectedTime.toLocaleTimeString()}</Text>
+          ) : (
+            <Text style={styles.selectedDate}>לא נבחרה שעה</Text>
+          )}
           <TouchableOpacity
             onPress={handleShowTimePicker}
-            style={[styles.appDateButtonContainer, {backgroundColor: "#708090", width: 130}]}
+            activeOpacity={0.7}
+            style={styles.appDateButtonContainer}
           >
-            <Text style={styles.appButtonTextDate}>בחר שעה</Text>
+            <Text style={styles.appButtonText}>בחר שעה</Text>
           </TouchableOpacity>
           {showTimePicker && (
             <DateTimePicker
-              value={selectedTime}
+              value={selectedTime || new Date()}
               mode="time"
               display="default"
               onChange={handleTimeChange}
             />
           )}
         </View>
-        <Text style={[styles.label, {marginTop: 10}]}>מיקום:</Text>
+        <Text style={[styles.label, {marginTop: 10}]}>מיקום (לא חובה):</Text>
         <TextInput
-          style={[
-            styles.input,
-            !fieldValidations.projectLocation && styles.invalidInput,
-          ]}
+          style={
+            styles.input}
           value={projectLocation}
           onChangeText={setProjectLocation}
         />
-        <TouchableOpacity onPress={handleSubmit} style={styles.appButtonContainer}>
+        <TouchableOpacity onPress={handleSubmit} activeOpacity={0.7} style={styles.appButtonContainer}>
           <Text style={styles.appButtonText}>צור מיזם</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -287,12 +305,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: "#fff",
-    justifyContent: 'flex-end',
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
+    textAlign: 'right'
   },
   input: {
     borderWidth: 1,
@@ -308,6 +326,7 @@ const styles = StyleSheet.create({
   selectedDate: {
     fontSize: 18,
     marginBottom: 20,
+    // textAlign: 'right'
   },
   appButtonContainer: {
     elevation: 8,
@@ -317,22 +336,13 @@ const styles = StyleSheet.create({
   },
   appDateButtonContainer: {
     elevation: 8,
-    backgroundColor: "#4682B4",
+    marginBottom: 15,
+    backgroundColor: "#708090",
     borderRadius: 10,
     padding: 10,
-    backgroundColor: 'red',
-    width: '100%',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    width: '35%',
   },
   appButtonText: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase"
-  },
-  appButtonTextDate: {
     fontSize: 18,
     color: "#fff",
     fontWeight: "bold",
