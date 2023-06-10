@@ -12,6 +12,8 @@ import {
   Modal,
   Alert,
   ImageBackground,
+  Image,
+  VirtualizedList,
 } from "react-native";
 import { db, auth } from "../firebaseConfig";
 import {
@@ -20,8 +22,10 @@ import {
   doc,
   updateDoc,
   getDocs,
+  deleteDoc,
 } from "@firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
+import { onAuthStateChanged } from "firebase/auth";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -29,11 +33,12 @@ const projectRef = collection(db, "projects"); // reference to collection projec
 const usersRef = collection(db, "users"); // reference to collection users
 
 const image = {
-  uri: "https://img.freepik.com/free-vector/green-fluid-shape-frame-design-resource_53876-168157.jpg?w=740&t=st=1685895245~exp=1685895845~hmac=f58810ba10c87a6c4cf3f2bb3996279f0ca7b5b6bfb16022bd8cdb8332b72148",
+  uri: "https://img.freepik.com/free-vector/simple-green-gradient-background-vector-business_53876-168091.jpg?w=740&t=st=1686128396~exp=1686128996~hmac=51915d651f86a00337ddcda83ce0186c8f26d1ef2867ebd13194f98bb8bf5e87",
 };
 const image2 = {
   uri: "https://img.freepik.com/free-photo/background-gradient-lights_23-2149305012.jpg?w=740&t=st=1685896597~exp=1685897197~hmac=d2aab27fae632b3ac35a5a1554662a3d5781b0af9e322c10977a8f7353b8281b",
 };
+
 
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -41,9 +46,25 @@ const HomeScreen = () => {
   const [state, setState] = useState([]);
   const navigation = useNavigation();
 
+  const [login, setLogin] = useState("");
+
+
+
   const handlePress = (event) => {
     setSelectedEvent(event);
     setModalVisible(true);
+  };
+
+  const handleAdminPress = (event) => {
+    // setSelectedEvent(event);
+    setModalVisible(false);
+    cancel(event.id);
+  };
+
+
+  const cancel = async (item) => {
+    const itemRef = doc(db, `projects/${item}`);
+    await deleteDoc(itemRef);
   };
 
   const handleEventPress = async (event) => {
@@ -127,27 +148,40 @@ const HomeScreen = () => {
       ]);
     }
   };
-
   useEffect(() => {
-    // onSnapshot is a lisiting to refTode (collection)
-    const subscriber = onSnapshot(projectRef, {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // User is signed in
+            setLogin(user.email);
+        } else {
+            // User is signed out
+            setLogin("");
+        }
+    });
+
+    const subscriberProject = onSnapshot(projectRef, {
       // next is the callback function the got called evry time the collection is changed
       // snapshot is object of the collection that contain the data of the collection (docs)
-      next: (snapshot) => {
-        const state = [];
-        snapshot.docs.forEach((item) => {
-          if (item.data().status) {
-            state.push({
-              id: item.id,
-              ...item.data(),
+        next: (snapshot) => {
+            const state = [];
+            snapshot.docs.forEach((item) => {
+                if (item.data().status) {
+                    state.push({
+                        id: item.id,
+                        ...item.data(),
+                    });
+                }
             });
-          }
-        });
-        setState(state);
-      },
+            setState(state);
+        },
     });
-    return () => subscriber();
-  }, []);
+
+    return () => {
+        unsubscribeAuth();
+        subscriberProject();
+    };
+}, []);
+
 
   const formatTime = (time) => {
     const eventTime = new Date(time.seconds * 1000);
@@ -171,7 +205,17 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      
       <ImageBackground source={image} style={styles.image}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',
+        opacity: 10
+       }}>
+        {/* <Image
+          source={require('./assets/my_event.png')}
+          style={{ width: 320, height:100  }}
+        /> */}
+        
+        </View>
         <ScrollView style={styles.Scroll}>
           <View style={styles.mainPage}>
             {state.map((event) => (
@@ -198,25 +242,37 @@ const HomeScreen = () => {
             <View style={styles.modalView}>
               <ScrollView style={styles.modalContent}>
                 <Text style={styles.modalText}>
-                  <Text style={{ fontWeight: "bold" }}>שם המיזם:</Text>{" "}
+                  <Text style={{ fontWeight: "bold" }}>שם המיזם:{"\n"}</Text>{" "}
                   {selectedEvent.name}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>תאריך המיזם:</Text>{" "}
-                  {extractDate(selectedEvent.date)}
+                  <Text style={{ fontWeight: "bold" }}>תאריך המיזם:{"\n"}</Text>{" "}
+                  {selectedEvent.date? extractDate(selectedEvent.date):null}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>
-                    שעת המיזם: {formatTime(selectedEvent.time)}
-                  </Text>
+                  <Text style={{ fontWeight: "bold" }}>  שעת המיזם:{"\n"} </Text>{" "}
+                  {selectedEvent.time?formatTime(selectedEvent.time):null}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>מיקום המיזם:</Text>{" "}
-                  {selectedEvent.place}
+                  <Text style={{ fontWeight: "bold" }}>מיקום המיזם:{"\n"}</Text>{" "}
+                  {selectedEvent.location}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>פרטים:</Text>{" "}
-                  {selectedEvent.details}
+                  <Text style={{ fontWeight: "bold" }}>פרטים:{"\n"}</Text>{" "}
+                  {selectedEvent.description}
                   {"\n\n"}
+                  {
+                    login === "iyarlevi5@gmail.com" ? (
+                      <Text>
+                        <Text style={{ fontWeight: "bold" }}>פרטי קשר:{"\n"}</Text>
+                        <Text style={{ fontSize: 18 }}>{selectedEvent.creator}</Text>
+                        {"\n\n"}
+                      </Text>
+                    ) : null
+                  }
+
+
+                  
                 </Text>
               </ScrollView>
               <View style={styles.buttonContainer}>
+                
                 <TouchableOpacity
                   style={styles.CloseButton}
                   onPress={() => setModalVisible(false)}
@@ -231,6 +287,35 @@ const HomeScreen = () => {
                     הצטרף למיזם
                   </Text>
                 </TouchableOpacity>
+                
+              </View>
+              <View style={styles.adminButtonContainer}>
+              {
+                login ==="iyarlevi5@gmail.com"? <TouchableOpacity
+                  style={styles.DeleteButton}
+                  onPress={() => {
+                    Alert.alert(
+                      "",
+                      "האם אתה בטוח שאתה רוצה למחוק את המיזם?",
+                      [
+                        {
+                          text: "לא",
+                          style: "cancel",
+                        },
+                        {
+                          text: "כן",
+                          onPress: () => handleAdminPress(selectedEvent),
+                      
+                        },
+                      ],
+                      { cancelable: true }
+                    );
+
+                  }}
+                >
+                  <Text style={styles.CloseButtonText}>מחיקה</Text>
+                </TouchableOpacity>:null
+                }
               </View>
             </View>
           </View>
@@ -256,8 +341,8 @@ const styles = StyleSheet.create({
   mainPage: {
     // flex: 7,
     paddingTop: 0,
-    height: deviceHeight,
-    marginTop: deviceHeight / 8,
+    // height: deviceHeight,
+    // marginTop: deviceHeight / 8,
     marginBottom: deviceHeight / 8,
     width: deviceWidth,
     alignItems: "center",
@@ -276,6 +361,9 @@ const styles = StyleSheet.create({
 
   Scroll: {
     paddingTop: 0,
+    
+    
+    
   },
   footer: {
     // flex: 1,
@@ -291,6 +379,10 @@ const styles = StyleSheet.create({
   text: {
     marginTop: 50,
     fontSize: 40,
+    textAlign:"center",
+    color: "#00a099",
+    fontWeight:'bold',
+    
   },
   Eventbutton: {
     width: deviceWidth - 40,
@@ -341,22 +433,23 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    fontSize: 25,
+    fontSize: 22,
     marginBottom: 15,
     textAlign: "center",
   },
+ 
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
   joinButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#32CD32",
     borderRadius: 15,
     padding: 10,
     elevation: 2,
     flex: 1,
-    margin: 10,
+    margin: 1,
   },
   joinButtonText: {
     color: "white",
@@ -375,6 +468,20 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  adminButtonContainer:{
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width:deviceWidth/3,
+  },
+  DeleteButton:{
+    backgroundColor: "black",
+    borderRadius: 15,
+    padding: 10,
+    elevation: 2,
+    flex: 1,
+    margin: 10,
   },
 });
 
