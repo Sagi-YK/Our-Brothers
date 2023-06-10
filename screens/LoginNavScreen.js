@@ -15,8 +15,8 @@ function LoginNavScreen(props) {
        <Stack.Navigator screenOptions={{headerStyle:{backgroundColor:'white'}}}>
 
           <Stack.Screen name="Log-In" component={LogInScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name='Sign-Up' component={SignUpScreen} />
-          <Stack.Screen name='Forgot-pass' component={RestartPasswordScreen}/>
+          <Stack.Screen name='Sign-Up' component={SignUpScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name='Forgot-pass' component={RestartPasswordScreen} />
           <Stack.Screen name='Code-Screen' component={SendCodeScreen} />
           <Stack.Screen name='New-Password-Screen' component={NewPasswordScreen} options={{ headerShown: false }}/>
           <Stack.Screen name='admin-screen' component={AdminHomeScreen} options={{ headerShown: false }}/>

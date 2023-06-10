@@ -7,11 +7,21 @@ import AppForm from './AppForm';
 import { auth,db } from '../firebaseConfig';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import { Alert, Keyboard, TouchableWithoutFeedback, View,StyleSheet } from 'react-native';
+import { Alert, Keyboard, TouchableWithoutFeedback, View,StyleSheet, ScrollView } from 'react-native';
 import AppButton from '../components/AppButton';
 import AppInputText from '../components/AppInputText';
 import AppCheckBox from '../components/AppCheckBox';
 import { addDoc, collection, doc, documentId, setDoc } from 'firebase/firestore';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 
 
@@ -22,15 +32,20 @@ const validateSchema = Yup.object().shape({
       [Yup.ref('Password')],
       'Passwords must match',
     ),
+    name:Yup.string().required()
   });
 function SignUpScreen() {
+    // const [expoPushToken, setExpoPushToken] = useState('');
+    // const [notification, setNotification] = useState(false);
+    // const notificationListener = useRef();
+    // const responseListener = useRef();
    
 
     const [is_check,set_check] = useState(false)
      const navigation = useNavigation();
 
 
-    const hadeleSignUp = (email,Password)=>{
+    const hadeleSignUp = (email,Password,name)=>{
         //console.log(db)
         
         createUserWithEmailAndPassword(auth,email,Password)
@@ -38,19 +53,41 @@ function SignUpScreen() {
             const user = userCredential.user
             console.log("register")
             console.log(userCredential.user.email)
+
            // navigation.navigate("Home")
-           addDoc(collection(db,"users"),{
+           registerForPushNotificationsAsync().then(token => {
+            console.log(token)
+            let userDoc = {
+                email:user.email, 
+                myEvents:[],
+                isdeleted:false,
+                name:name
+            }
+                if(token){
+                    userDoc['token'] = token
+                }
+                addDoc(collection(db,"users"),
+                  userDoc  
+                ).then(()=>{
+                    console.log("user added secssfully")
+                    navigation.navigate("Home")
+                }).catch((error=>{
+                    console.log(error)
+                }))
+        });
+        //    addDoc(collection(db,"users"),{
             
-            email:user.email,
-            myEvents:[],
-            isdeleted:false
-        }, { doc: user.uid })
-            .then(()=>{
-                console.log("user added secssfully")
-                navigation.navigate("Home")
-            }).catch((error=>{
-                console.log(error)
-            }))
+        //     email:user.email,
+        //     myEvents:[],
+        //     isdeleted:false,
+        //     name:name
+        // }, { doc: user.uid })
+        //     .then(()=>{
+        //         console.log("user added secssfully")
+        //         navigation.navigate("Home")
+        //     }).catch((error=>{
+        //         console.log(error)
+        //     }))
             
         
         })
@@ -70,10 +107,11 @@ function SignUpScreen() {
    
 
     return (
+        <ScrollView>
 
-        <Formik
-        initialValues={{email:'',Password:'', confirm:''}}
-        onSubmit={values=>hadeleSignUp(values.email,values.Password)}
+<Formik
+        initialValues={{email:'',Password:'', confirm:'',name:''}}
+        onSubmit={values=>hadeleSignUp(values.email,values.Password,values.name)}
         validationSchema={validateSchema}
         > 
         {
@@ -83,6 +121,17 @@ function SignUpScreen() {
             }}>
                 <View  style={styles.container}>
 
+                <AppInputText
+                  place_holder={'name'}
+                  onChangeText={handleChange('name')}
+                  value={values.name}
+                  error={errors.name}
+                  onBlur={()=>setFieldTouched('name')}
+                  touch={touched.name}
+                  iconName={'account'}
+
+                >
+                </AppInputText>
                    
 
                 <AppInputText
@@ -149,10 +198,42 @@ function SignUpScreen() {
         }
             
             </Formik>
+
+        </ScrollView>
+     
         
         
     );
 }
+
+async function registerForPushNotificationsAsync() {
+    let token;
+  
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+        //   alert('Failed to get push token for push notification!');
+          return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log(token);
+      
+    
+      return token;
+    }
 
 const styles = StyleSheet.create({
     container:{

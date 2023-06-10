@@ -6,12 +6,11 @@ import { Formik, validateYupSchema } from 'formik';
 import * as Yup from 'yup';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth,db } from '../firebaseConfig';
-import { Alert, TouchableWithoutFeedback,Keyboard,View,StyleSheet,ScrollView } from 'react-native';
+import { Alert, TouchableWithoutFeedback,Keyboard,View,StyleSheet,ScrollView} from 'react-native';
 import AppInputText from '../components/AppInputText';
 import AppButton from '../components/AppButton';
 import AppText from '../components/AppText';
 import {doc, getDocs,collection} from "firebase/firestore"
-
 
 const validateSchema = Yup.object().shape({
   email: Yup.string().required().email().label("email"),
@@ -28,7 +27,6 @@ function LogInScreen(props) {
     
     const navigation = useNavigation();
     
-    
     const handleSignUpPress = ()=> {
         navigation.navigate('Sign-Up');
       }
@@ -42,6 +40,7 @@ function LogInScreen(props) {
           const fetchData = async () => {
             if(email === 'iyarlevi5@gmail.com'){
               navigation.navigate('admin-screen')
+              return;
             }
             const querySnapshot = await getDocs(userRef);
             querySnapshot.forEach((doc) => {
@@ -159,7 +158,7 @@ function LogInScreen(props) {
 }
 const styles = StyleSheet.create({
   container:{
-    paddingVertical:150,
+    paddingVertical:100,
     flex:1,
     alignItems:'center',
     justifyContent:'center'
@@ -194,6 +193,9 @@ const styles = StyleSheet.create({
   
 })
 
+// LogInScreen.navigationOptions = {
+//   tabBarVisible: false, // Hide the Tab Navigation for this screen
+// };
 
 export default LogInScreen;
 

@@ -1,112 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef } from 'react';
 import { Button, FlatList } from 'react-native';
-import { View,StyleSheet,ScrollView ,Alert } from 'react-native';
+import { View,StyleSheet,ScrollView ,Alert,Text,Dimensions,TouchableOpacity,Modal} from 'react-native';
 import ProjectApproval from '../components/ProjectApproval';
 import {db,app} from '../firebaseConfig';
-import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, updateDoc,getDocs } from 'firebase/firestore';
 import AppInputText from '../components/AppInputText';
+// import * as Device from 'expo-device';
+ import * as Notifications from 'expo-notifications';
+
+
+ const deviceWidth = Dimensions.get("window").width;
+ 
+const deviceHeight = Dimensions.get("window").height;
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 
 
-//const arr = [{text: "מיזם 1"},{text: "מיזם 2"},{text: "מיזם 3"}]
-
-
-// function ManagerApproval(props){
-//     const [todos,setTodos] = useState ([])
-//     const [todo,setTodo] = useState ('')
-
-//     useEffect(()=>{
-//         const refTodo = collection(db,'todos'); // reference to the todos collection
-
-//         // onSnapshot is a lisiting to refTode (collection)
-//         const subscriber = onSnapshot(refTodo,{
-
-//             // next is the callback function the got called evry time the collection is changed
-//             // snapshot is object of the collection that contain the data of the collection (docs)
-//             next:(snapshot)=>{
-//                 const todos = [];
-//                 snapshot.docs.forEach((doc)=>{
-//                     todos.push({
-//                         id:doc.id,
-//                         ...doc.data(),
-//                     });
-//                 });
-//                 setTodos(todos);
-//                 console.log(todos)
-//             },
-//         });
-//         return ()=>subscriber();
-
-//     },[]);
-
-
-
-//     // add doc to the collection projects
-//     const add_doc = async ()=>{
-
-//         try {
-//             const doc = await addDoc(collection(db,"todos"),{done:false,name:todo})
-//             setTodo('')
-//           } catch (error) {
-//             console.error(error);
-//           }
-//     }
-
-  
-
-
-//     const render = ({ item }) => {
-//         const docref = doc(db, `todos/${item.id}`); // reference to specific doc, now i can update its fileds,delete it,etc
-        
-//         const del = async () => {
-//             //   await updateDoc(docref, { done: !item.done }); update the done atribute of a filed
-//             deleteDoc(docref) // delete this doc
-//         };
-      
-//         return !item.done && (<Text onPress={del}>{item.name}</Text>);
-//       };
-
-//     return(
-//         <View style={styles.container}>   
-
-//         <View style = {styles.form}>
-//             <AppInputText place_holder={"add new todo"} onChangeText={(Text)=>setTodo(Text)} value={todo}></AppInputText>
-//             <Button onPress={()=>add_doc()} title='add Tode' disabled={todo===''}></Button>
-//         </View>
-
-//         <View>
-//             <FlatList
-//             data={todos}
-//             keyExtractor={(item)=>item.id} 
-//             renderItem={render}
-//             >
-
-//             </FlatList>
-//         </View>
-
-            
-//         </View>
-//     );
-// };
-
-// const styles = StyleSheet.create({
-//     container:{
-//        justifyContent:'center',
-//        alignItems:'center',
-//        paddingLeft:40,
-//        paddingTop:120,
-//        flex:1,
-//        width:"100%"     
-//     },
-//     form:{
-//         flexDirection:'row'
-//     }
-    
-// })
-
+const userRef = collection(db, "users");
 
 function ManagerApproval(props) {
+    
     const [state,setState] =useState([])//current user
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
 
 
     
@@ -140,6 +63,23 @@ function ManagerApproval(props) {
 
     },[])
 
+    // useEffect(() => {
+        // registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    
+    //     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+    //       setNotification(notification);
+    //     });
+    
+    //     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+    //       console.log(response);
+    //     });
+    
+    //     return () => {
+    //       Notifications.removeNotificationSubscription(notificationListener.current);
+    //       Notifications.removeNotificationSubscription(responseListener.current);
+    //     };
+    //   }, []);
+
     // when user press on aprrove button ask him if he sures he wants to approve project,
     //and if he does goes to aprroveProject function
     const handleAprrove =   (item)=>{
@@ -152,7 +92,34 @@ function ManagerApproval(props) {
         
         const docRef = doc(db,`projects/${item.id}`) // reference to specific doc, now i can update its fileds,delete it,etc
 
-       await updateDoc(docRef,{status: !item.status}); // update specific filed in the doc
+        updateDoc(docRef,{status: !item.status}); // update specific filed in the doc
+
+       let tokens =[]
+       const querySnapshot = await getDocs(userRef);
+       querySnapshot.forEach((doc) => {
+            if(doc.data().token){
+                tokens.push(doc.data().token)
+            }
+       })
+       console.log(tokens)
+
+       if(tokens.length > 0){
+            fetch('https://exp.host/--/api/v2/push/send', {
+                    method: 'POST',
+                    headers: {
+            'Content-Type': 'application/json',
+            },
+                    body: JSON.stringify({
+                    to: tokens,
+                    title: 'מיזם חדש',
+                    body:'מיזם חדש עלה עלה לאוויר!',
+        
+                
+            }),
+        });
+        setModalVisible(false)
+        setSelectedEvent(null)
+    }
 
     }
 
@@ -162,28 +129,149 @@ function ManagerApproval(props) {
     }
 
     const removeProject =  async (item)=>{
-        
+
+        const querySnapshot = await getDocs(userRef);
+        let tokens =[]
+       querySnapshot.forEach((doc) => {
+            if(doc.data().email === item.creator){
+
+                if(doc.data().token){
+                    tokens.push(doc.data().token)
+                }
+                return;
+            }
+       })
+
+       if(tokens.length > 0){
+        fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+        'Content-Type': 'application/json',
+        },
+                body: JSON.stringify({
+                to: tokens,
+                title: 'ביטול מיזם',
+                body:'מיזם שהצעת לא עבר אישור של מנהל',
+    
+            
+        }),
+    });
+}        
         const docRef = doc(db,`projects/${item.id}`)
 
-        await deleteDoc(docRef) // delete this doc
+         deleteDoc(docRef) // delete this doc
+        setModalVisible(false)
+        setSelectedEvent(null)
 
     }
+
+    const extractDate = (date) => {
+        const seconds = date.seconds;
+        const milliseconds = seconds * 1000;
+        const extractedDate = new Date(milliseconds);
+    
+        const year = extractedDate.getFullYear();
+        const month = String(extractedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(extractedDate.getDate()).padStart(2, "0");
+    
+        return `${day}-${month}-${year}`;
+      };
+
+      const formatTime = (time) => {
+        const eventTime = new Date(time.seconds * 1000);
+        return eventTime.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      };
+    
 
 
 
     return (
         
+<View style={styles.container}>
     <ScrollView style = {styles.scroll}>
-        <View style={styles.container}>
+        
 
-                {state.map((item)=>{
-                    
-                        return <ProjectApproval  key = {item.id} titleText={item.name} descriptionText={item.description} aprrovePress={()=>handleAprrove(item)} cancellPress={()=>handleCancell(item)} />
-                    
-                })}
+        {state.map((event) => (
+              <TouchableOpacity
+                key={event.id}
+                style={styles.Eventbutton}
+                onPress={() => {
+                    setSelectedEvent(event)
+                    setModalVisible(true)
+                }}
+              >
+                <View>
+                  <Text style={styles.EventText}>{event.name}</Text>
+                  <Text style={styles.EventText}>
+                    {event.date ? extractDate(event.date) : ""}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
 
-        </View>
      </ScrollView>
+
+     {selectedEvent && (
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <ScrollView style={styles.modalContent}>
+                <Text style={styles.modalText}>
+                  <Text style={{ fontWeight: "bold" }}>שם המיזם:</Text>{" "}
+                  {selectedEvent.name}
+                  {"\n\n"}
+                  <Text style={{ fontWeight: "bold" }}>תאריך המיזם:</Text>{" "}
+                  {selectedEvent.date? extractDate(selectedEvent.date):null}
+                  {"\n\n"}
+                  <Text style={{ fontWeight: "bold" }}>
+                    שעת המיזם: {selectedEvent.time? formatTime(selectedEvent.time):null}
+                  </Text>
+                  {"\n\n"}
+                  <Text style={{ fontWeight: "bold" }}>מיקום המיזם:</Text>{" "}
+                  {selectedEvent.location}
+                  {"\n\n"}
+                  <Text style={{ fontWeight: "bold" }}>פרטים:</Text>{" "}
+                  {selectedEvent.description}
+                  {"\n\n"}
+                  <Text style={{ fontWeight: "bold" }}>פרטי יוצר:</Text>{" "}
+                  {selectedEvent.creator}
+                  {"\n\n"}
+                </Text>
+                
+              </ScrollView>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.CloseButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.CloseButtonText}>סגור</Text>
+                </TouchableOpacity>
+                    <TouchableOpacity style={styles.cancellButton}>
+                      <Text
+                        style={styles.CloseButtonText}
+                        onPress={() => handleCancell(selectedEvent)}
+                      >
+                        ביטול מיזם
+                      </Text>
+                    </TouchableOpacity>
+                <TouchableOpacity style={styles.joinButton}>
+                  <Text
+                    style={styles.joinButtonText}
+                    onPress={() => handleAprrove(selectedEvent)}
+                  >
+                    אישור מיזם
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      )}
+
+</View>
     );
     {/* <FlatList 
     data={state}
@@ -193,6 +281,8 @@ function ManagerApproval(props) {
 
     /> */}
 }
+
+
 const styles = StyleSheet.create({
     container:{
       // justifyContent:'center',
@@ -200,11 +290,101 @@ const styles = StyleSheet.create({
        paddingTop:50,
        flex:1,
        //width:"100%"     
+
+    
+         backgroundColor: "#dcdcdc",
+        // flex: 1,
+      
     },
     scroll:{
 
         backgroundColor:'#DCDCDC'
-    }
+    },
+    Eventbutton: {
+        width: deviceWidth - 40,
+        height: 80,
+        backgroundColor: "#0c2e63",
+        borderRadius: 15,
+        alignItems: "center",
+        justifyContent: "center",
+        margin: 15,
+        borderWidth: 2,
+        borderColor: "#00a099",
+        position: "relative",
+        overflow: "hidden",
+      },
+      EventText: {
+        fontSize: 25,
+        color: "white",
+        textAlign: "center",
+      },
+
+      centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      },
+      modalView: {
+        height: deviceHeight * 0.8,
+        width: deviceWidth * 0.8,
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 10,
+        },
+        shadowOpacity: 0.75,
+        shadowRadius: 4,
+        elevation: 5,
+      },
+      modalText: {
+        fontSize: 25,
+        marginBottom: 15,
+        textAlign: "center",
+      },
+      buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+      },
+      joinButton: {
+        backgroundColor: '#32CD32',
+        borderRadius: 15,
+        padding: 10,
+        elevation: 2,
+        flex: 1,
+        margin: 10,
+      },
+      joinButtonText: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+      },
+      CloseButton: {
+        backgroundColor: "#2196F3",
+        borderRadius: 15,
+        padding: 12,
+        elevation: 2,
+        flex: 1,
+        margin: 10,
+      },
+      cancellButton:{
+        backgroundColor: "#f44336",
+        borderRadius: 15,
+        padding: 10,
+        elevation: 2,
+        flex: 1,
+        margin: 10,
+      },
+      CloseButtonText: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center",
+      },
     
 })
 
