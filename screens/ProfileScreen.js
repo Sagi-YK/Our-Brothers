@@ -2,7 +2,14 @@
 //  * this component will display the profile page
 //  */
 
-import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Alert,
+  ImageBackground,
+} from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MyEvents from "./MyEvents";
 import UpdateData from "./UpdateData";
@@ -36,7 +43,11 @@ const ProfileScreen = ({ navigation }) => {
         component={LoginNavScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="MyEvents" component={MyEvents} />
+      <Stack.Screen
+        name="MyEvents"
+        component={MyEvents}
+        options={{ headerShown: false }}
+      />
       {/* <Stack.Screen name="UpdateData" component={UpdateData} /> */}
     </Stack.Navigator>
   );
@@ -174,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default ProfileScreen;

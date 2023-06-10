@@ -21,10 +21,26 @@ const AdminHomeScreen = () => {
         component={AdminPage}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="UsersManagment" component={AdminManagment} />
-      <Stack.Screen name="approval" component={ManagerApproval} />
-      <Stack.Screen name="stats" component={StatisticsScreen} />
-      <Stack.Screen name="profile" component={ProfileScreen} />
+      <Stack.Screen
+        name="UsersManagment"
+        component={AdminManagment}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="approval"
+        component={ManagerApproval}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="stats"
+        component={StatisticsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
