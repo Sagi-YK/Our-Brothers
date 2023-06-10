@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { app, db, auth } from "../firebaseConfig";
+import { db, auth } from "../firebaseConfig";
 import {
   collection,
   deleteDoc,
@@ -15,8 +15,17 @@ import {
   getDocs,
   onSnapshot,
   updateDoc,
+  Timestamp,
 } from "firebase/firestore";
+import * as Notifications from 'expo-notifications';
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 const MyEvents = () => {
   const [events, setEvents] = useState([]);
   const [user, setUser] = useState({});
@@ -27,7 +36,6 @@ const MyEvents = () => {
 
   useEffect(() => {
     // Fetch the user's events from the database
-
     const fetchData = async () => {
       try {
         const querySnapshot = await getDocs(userRef);
@@ -43,20 +51,25 @@ const MyEvents = () => {
         console.log(user);
 
         subscriber = onSnapshot(projectRef, {
-          // next is the callback function the got called evry time the collection is changed
-          // snapshot is object of the collection that contain the data of the collection (docs)
           next: (snapshot) => {
             const events = [];
+            const currentTimestamp = Timestamp.now();
+
             snapshot.docs.forEach((item) => {
               user.myEvents.forEach((usersample) => {
                 if (usersample === item.id) {
-                  console.log(usersample);
-                  events.push({
-                    id: item.id,
-                    name: item.data().name,
-                    time: item.data().time,
-                    creator: item.data().creator,
-                  });
+                  const itemTimestamp = item.data().date;
+                  console.log(item.data().date);
+                  if (itemTimestamp >= currentTimestamp) {
+                    events.push({
+                      id: item.id,
+                      name: item.data().name,
+                      date: item.data().date,
+                      time: item.data().time,
+                      creator: item.data().creator,
+                      participants:item.data().participants
+                    });
+                  }
                 }
               });
             });
@@ -74,13 +87,44 @@ const MyEvents = () => {
   }, []);
 
   const cancel = async (item) => {
-    //  TODO - ADD AN ALERT
-    const itemRef = doc(db, `projects/${item}`);
-    await deleteDoc(itemRef);
-  };
+    
+
+    let tokens =[]
+       const querySnapshot = await getDocs(userRef);
+       querySnapshot.forEach((doc) => {
+        item.participants.forEach(userEmail=>{
+            if(userEmail === doc.data().email){
+                if(userEmail !== item.creator){
+                    if(doc.data().token){
+                        tokens.push(doc.data().token)
+                    }
+                }
+            }
+
+        })
+            
+       })
+
+       if(tokens.length > 0){
+        fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+        'Content-Type': 'application/json',
+        },
+                body: JSON.stringify({
+                to: tokens,
+                title: 'מיזם נמחק',
+                body:'מיזם שבוצע אליו הרשמה נמחק',
+    
+            
+        }),
+    });
+  }
+  const itemRef = doc(db, `projects/${item.id}`);
+     deleteDoc(itemRef);
+};
 
   const cancelAtend = async (item) => {
-    //  TODO - ADD AN ALERT
     const itemRef = doc(db, `users/${user.id}`);
     let remainEvents = [];
     user.myEvents.forEach((oneEvent) => {
@@ -92,35 +136,28 @@ const MyEvents = () => {
     user["myEvents"] = remainEvents;
     setUser(user);
 
-    // let user = {};
-    //     querySnapshot.forEach((doc) => {
-    //       if (doc.data().email === userEmail) {
-    //         user["email"] = doc.data().email;
-    //         user["myEvents"] = doc.data().myEvents;
-    //         user["id"] = doc.id;
-    //       }
-    //     });
-
     setEvents(
       events.filter((val) => {
         return val.id !== item.id;
       })
     );
-
-    // let updatedEvents = [];
-    // events.forEach((updateOneEvent) => {
-    //   remainEvents.forEach((eve) => {
-    //     if (eve === updateOneEvent.id) {
-    //       updatedEvents.push(updateOneEvent);
-    //     }
-    //   });
-    // });
-    // setEvents(updatedEvents);
   };
 
   const formatTime = (time) => {
     const date = new Date(time.seconds * 1000);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const extractDate = (date) => {
+    const seconds = date.seconds;
+    const milliseconds = seconds * 1000;
+    const extractedDate = new Date(milliseconds);
+
+    const year = extractedDate.getFullYear();
+    const month = String(extractedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(extractedDate.getDate()).padStart(2, "0");
+
+    return `${day}-${month}-${year}`;
   };
 
   return (
@@ -145,6 +182,14 @@ const MyEvents = () => {
                 </Text>
               )}
 
+              {item.date == undefined ? (
+                <Text style={styles.itemTime}> טרם נקבע תאריך </Text>
+              ) : (
+                <Text style={styles.itemTime}>
+                  תאריך: {extractDate(item.date)}
+                </Text>
+              )}
+
               {item.creator === userEmail ? (
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
@@ -160,7 +205,7 @@ const MyEvents = () => {
                           },
                           {
                             text: "כן",
-                            onPress: () => cancel(item.id),
+                            onPress: () => cancel(item),
                           },
                         ],
                         { cancelable: true }
@@ -262,5 +307,4 @@ const styles = StyleSheet.create({
 
 export default MyEvents;
 
-// TODO - ADD DATES CHECK!
 // TODO - UPDATEEVENT - NEED TO SENT THE EVENT.ID TO THE NEW PAGE
