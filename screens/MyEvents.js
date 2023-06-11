@@ -17,7 +17,7 @@ import {
   updateDoc,
   Timestamp,
 } from "firebase/firestore";
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -58,16 +58,22 @@ const MyEvents = () => {
             snapshot.docs.forEach((item) => {
               user.myEvents.forEach((usersample) => {
                 if (usersample === item.id) {
+                  const oneDayMilliseconds = 24 * 60 * 60 * 1000; // One day in milliseconds
+                  const previousDayTimestamp = new Timestamp(
+                    currentTimestamp.seconds - oneDayMilliseconds / 1000,
+                    currentTimestamp.nanoseconds
+                  );
                   const itemTimestamp = item.data().date;
                   console.log(item.data().date);
-                  if (itemTimestamp >= currentTimestamp) {
+                  if (itemTimestamp >= previousDayTimestamp) {
                     events.push({
                       id: item.id,
                       name: item.data().name,
                       date: item.data().date,
                       time: item.data().time,
                       creator: item.data().creator,
-                      participants:item.data().participants
+                      participants: item.data().participants,
+                      numpraticipants: item.data().numpraticipants,
                     });
                   }
                 }
@@ -87,52 +93,55 @@ const MyEvents = () => {
   }, []);
 
   const cancel = async (item) => {
-    
-
-    let tokens =[]
-       const querySnapshot = await getDocs(userRef);
-       querySnapshot.forEach((doc) => {
-        item.participants.forEach(userEmail=>{
-            if(userEmail === doc.data().email){
-                if(userEmail !== item.creator){
-                    if(doc.data().token){
-                        tokens.push(doc.data().token)
-                    }
-                }
+    let tokens = [];
+    const querySnapshot = await getDocs(userRef);
+    querySnapshot.forEach((doc) => {
+      item.participants.forEach((userEmail) => {
+        if (userEmail === doc.data().email) {
+          if (userEmail !== item.creator) {
+            if (doc.data().token) {
+              tokens.push(doc.data().token);
             }
-
-        })
-            
-       })
-
-       if(tokens.length > 0){
-        fetch('https://exp.host/--/api/v2/push/send', {
-                method: 'POST',
-                headers: {
-        'Content-Type': 'application/json',
-        },
-                body: JSON.stringify({
-                to: tokens,
-                title: 'מיזם נמחק',
-                body:'מיזם שבוצע אליו הרשמה נמחק',
-    
-            
-        }),
+          }
+        }
+      });
     });
-  }
-  const itemRef = doc(db, `projects/${item.id}`);
-     deleteDoc(itemRef);
-};
+
+    if (tokens.length > 0) {
+      fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: tokens,
+          title: "מיזם נמחק",
+          body: "מיזם שנרשמת אליו נמחק",
+        }),
+      });
+    }
+    const itemRef = doc(db, `projects/${item.id}`);
+    deleteDoc(itemRef);
+  };
 
   const cancelAtend = async (item) => {
     const itemRef = doc(db, `users/${user.id}`);
+    const projectRef = doc(db, `projects/${item.id}`);
     let remainEvents = [];
+    // item.data().numpraticipants = item.data().numpraticipants - 1;
     user.myEvents.forEach((oneEvent) => {
       if (oneEvent !== item.id) {
         remainEvents.push(oneEvent);
       }
     });
+    const iyar = item.participants.filter((ev) => {
+      return ev !== user.email;
+    });
     updateDoc(itemRef, { myEvents: remainEvents });
+    updateDoc(projectRef, {
+      numpraticipants: item.numpraticipants - 1,
+      participants: iyar,
+    });
     user["myEvents"] = remainEvents;
     setUser(user);
 

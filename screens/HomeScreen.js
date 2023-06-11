@@ -23,6 +23,7 @@ import {
   updateDoc,
   getDocs,
   deleteDoc,
+  Timestamp,
 } from "@firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { onAuthStateChanged } from "firebase/auth";
@@ -39,7 +40,6 @@ const image2 = {
   uri: "https://img.freepik.com/free-photo/background-gradient-lights_23-2149305012.jpg?w=740&t=st=1685896597~exp=1685897197~hmac=d2aab27fae632b3ac35a5a1554662a3d5781b0af9e322c10977a8f7353b8281b",
 };
 
-
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -47,8 +47,6 @@ const HomeScreen = () => {
   const navigation = useNavigation();
 
   const [login, setLogin] = useState("");
-
-
 
   const handlePress = (event) => {
     setSelectedEvent(event);
@@ -60,7 +58,6 @@ const HomeScreen = () => {
     setModalVisible(false);
     cancel(event.id);
   };
-
 
   const cancel = async (item) => {
     const itemRef = doc(db, `projects/${item}`);
@@ -150,38 +147,44 @@ const HomeScreen = () => {
   };
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in
-            setLogin(user.email);
-        } else {
-            // User is signed out
-            setLogin("");
-        }
+      if (user) {
+        // User is signed in
+        setLogin(user.email);
+      } else {
+        // User is signed out
+        setLogin("");
+      }
     });
 
     const subscriberProject = onSnapshot(projectRef, {
       // next is the callback function the got called evry time the collection is changed
       // snapshot is object of the collection that contain the data of the collection (docs)
-        next: (snapshot) => {
-            const state = [];
-            snapshot.docs.forEach((item) => {
-                if (item.data().status) {
-                    state.push({
-                        id: item.id,
-                        ...item.data(),
-                    });
-                }
+      next: (snapshot) => {
+        const state = [];
+        const currentTimestamp = Timestamp.now();
+        snapshot.docs.forEach((item) => {
+          const oneDayMilliseconds = 24 * 60 * 60 * 1000; // One day in milliseconds
+          const previousDayTimestamp = new Timestamp(
+            currentTimestamp.seconds - oneDayMilliseconds / 1000,
+            currentTimestamp.nanoseconds
+          );
+          const itemTimestamp = item.data().date;
+          if (item.data().status && itemTimestamp >= previousDayTimestamp) {
+            state.push({
+              id: item.id,
+              ...item.data(),
             });
-            setState(state);
-        },
+          }
+        });
+        setState(state);
+      },
     });
 
     return () => {
-        unsubscribeAuth();
-        subscriberProject();
+      unsubscribeAuth();
+      subscriberProject();
     };
-}, []);
-
+  }, []);
 
   const formatTime = (time) => {
     const eventTime = new Date(time.seconds * 1000);
@@ -205,16 +208,19 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      
       <ImageBackground source={image} style={styles.image}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',
-        opacity: 10
-       }}>
-        {/* <Image
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            opacity: 10,
+          }}
+        >
+          {/* <Image
           source={require('./assets/my_event.png')}
           style={{ width: 320, height:100  }}
         /> */}
-        
         </View>
         <ScrollView style={styles.Scroll}>
           <View style={styles.mainPage}>
@@ -245,34 +251,39 @@ const HomeScreen = () => {
                   <Text style={{ fontWeight: "bold" }}>שם המיזם:{"\n"}</Text>{" "}
                   {selectedEvent.name}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>תאריך המיזם:{"\n"}</Text>{" "}
-                  {selectedEvent.date? extractDate(selectedEvent.date):null}
+                  <Text style={{ fontWeight: "bold" }}>
+                    תאריך המיזם:{"\n"}
+                  </Text>{" "}
+                  {selectedEvent.date ? extractDate(selectedEvent.date) : null}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>  שעת המיזם:{"\n"} </Text>{" "}
-                  {selectedEvent.time?formatTime(selectedEvent.time):null}
+                  <Text style={{ fontWeight: "bold" }}>
+                    {" "}
+                    שעת המיזם:{"\n"}{" "}
+                  </Text>{" "}
+                  {selectedEvent.time ? formatTime(selectedEvent.time) : null}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>מיקום המיזם:{"\n"}</Text>{" "}
+                  <Text style={{ fontWeight: "bold" }}>
+                    מיקום המיזם:{"\n"}
+                  </Text>{" "}
                   {selectedEvent.location}
                   {"\n\n"}
                   <Text style={{ fontWeight: "bold" }}>פרטים:{"\n"}</Text>{" "}
                   {selectedEvent.description}
                   {"\n\n"}
-                  {
-                    login === "iyarlevi5@gmail.com" ? (
-                      <Text>
-                        <Text style={{ fontWeight: "bold" }}>פרטי קשר:{"\n"}</Text>
-                        <Text style={{ fontSize: 18 }}>{selectedEvent.creator}</Text>
-                        {"\n\n"}
+                  {login === "iyarlevi5@gmail.com" ? (
+                    <Text>
+                      <Text style={{ fontWeight: "bold" }}>
+                        פרטי קשר:{"\n"}
                       </Text>
-                    ) : null
-                  }
-
-
-                  
+                      <Text style={{ fontSize: 18 }}>
+                        {selectedEvent.creator}
+                      </Text>
+                      {"\n\n"}
+                    </Text>
+                  ) : null}
                 </Text>
               </ScrollView>
               <View style={styles.buttonContainer}>
-                
                 <TouchableOpacity
                   style={styles.CloseButton}
                   onPress={() => setModalVisible(false)}
@@ -287,35 +298,32 @@ const HomeScreen = () => {
                     הצטרף למיזם
                   </Text>
                 </TouchableOpacity>
-                
               </View>
               <View style={styles.adminButtonContainer}>
-              {
-                login ==="iyarlevi5@gmail.com"? <TouchableOpacity
-                  style={styles.DeleteButton}
-                  onPress={() => {
-                    Alert.alert(
-                      "",
-                      "האם אתה בטוח שאתה רוצה למחוק את המיזם?",
-                      [
-                        {
-                          text: "לא",
-                          style: "cancel",
-                        },
-                        {
-                          text: "כן",
-                          onPress: () => handleAdminPress(selectedEvent),
-                      
-                        },
-                      ],
-                      { cancelable: true }
-                    );
-
-                  }}
-                >
-                  <Text style={styles.CloseButtonText}>מחיקה</Text>
-                </TouchableOpacity>:null
-                }
+                {login === "iyarlevi5@gmail.com" ? (
+                  <TouchableOpacity
+                    style={styles.DeleteButton}
+                    onPress={() => {
+                      Alert.alert(
+                        "",
+                        "למחוק את המיזם?",
+                        [
+                          {
+                            text: "לא",
+                            style: "cancel",
+                          },
+                          {
+                            text: "כן",
+                            onPress: () => handleAdminPress(selectedEvent),
+                          },
+                        ],
+                        { cancelable: true }
+                      );
+                    }}
+                  >
+                    <Text style={styles.CloseButtonText}>מחיקה</Text>
+                  </TouchableOpacity>
+                ) : null}
               </View>
             </View>
           </View>
@@ -361,9 +369,6 @@ const styles = StyleSheet.create({
 
   Scroll: {
     paddingTop: 0,
-    
-    
-    
   },
   footer: {
     // flex: 1,
@@ -379,10 +384,9 @@ const styles = StyleSheet.create({
   text: {
     marginTop: 50,
     fontSize: 40,
-    textAlign:"center",
+    textAlign: "center",
     color: "#00a099",
-    fontWeight:'bold',
-    
+    fontWeight: "bold",
   },
   Eventbutton: {
     width: deviceWidth - 40,
@@ -437,7 +441,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
- 
+
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -469,13 +473,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  adminButtonContainer:{
+  adminButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width:deviceWidth/3,
+    width: deviceWidth / 3,
   },
-  DeleteButton:{
+  DeleteButton: {
     backgroundColor: "black",
     borderRadius: 15,
     padding: 10,
