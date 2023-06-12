@@ -253,6 +253,7 @@ const HomeScreen = () => {
                 key={event.id}
                 style={styles.Eventbutton}
                 onPress={() => handlePress(event)}
+                activeOpacity={0.7}
               >
                 <View>
                   <Text style={styles.EventText}>{event.name}</Text>
