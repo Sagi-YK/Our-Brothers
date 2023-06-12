@@ -3,11 +3,10 @@ import { useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import AppForm from "./AppForm";
+
 import { auth, db } from "../firebaseConfig";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -17,6 +16,7 @@ import {
   View,
   StyleSheet,
   ScrollView,
+  Platform,
 } from "react-native";
 import AppButton from "../components/AppButton";
 import AppInputText from "../components/AppInputText";
@@ -24,11 +24,9 @@ import AppCheckBox from "../components/AppCheckBox";
 import {
   addDoc,
   collection,
-  doc,
-  documentId,
-  setDoc,
+  
 } from "firebase/firestore";
-import * as Device from "expo-device";
+
 import * as Notifications from "expo-notifications";
 
 Notifications.setNotificationHandler({
@@ -41,7 +39,10 @@ Notifications.setNotificationHandler({
 
 const validateSchema = Yup.object().shape({
   email: Yup.string().required().email().label("Email"),
-  Password: Yup.string().required().min(6).label("Password"),
+  Password: Yup.string().required().min(6).matches(
+    /^(?=.*[a-z])(?=.*[A-Z])/,
+    "Password must contain both lowercase and uppercase letters"
+  ).label("Password"),
   confirm: Yup.string()
     .required()
     .min(6)
@@ -76,7 +77,20 @@ function SignUpScreen() {
             .catch((error) => {
               console.log(error);
             });
-        });
+        })
+          .catch(()=>{
+          let userDoc = {
+            email: user.email,
+            myEvents: [],
+            isdeleted: false,
+            name: name,
+          };
+          addDoc(collection(db, "users"), userDoc)
+            .then(() => {
+              navigation.navigate("Home");
+            })
+
+        })
       })
       .catch((error) => {
         Alert.alert("אופס", "האימייל נמצא במערכת או שלא תקין", [
@@ -209,10 +223,17 @@ const styles = StyleSheet.create({
   secondButton: {
     borderWidth: 0,
     backgroundColor: "#0782F9",
+    //  justifyContent: "center",
+    //  alignItems: "center",
+     //paddingBottom:20
   },
   secondButtonText: {
     fontSize: 25,
     fontWeight: "700",
+    justifyContent: "center",
+    alignItems: "center"
+    
+    
   },
 });
 
