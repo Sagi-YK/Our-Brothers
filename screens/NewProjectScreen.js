@@ -180,6 +180,7 @@ const NewProjectScreen = () => {
           ]}
           value={projectName}
           onChangeText={setProjectName}
+          maxLength={50}
         />
         <Text style={styles.label}>שם המפרסם:</Text>
         <TextInput
@@ -189,6 +190,7 @@ const NewProjectScreen = () => {
           ]}
           value={advertiserName}
           onChangeText={setAdvertiserName}
+          maxLength={50}
         />
         <CategoryButton
           selectedCategory={projectCategory}
@@ -209,6 +211,20 @@ const NewProjectScreen = () => {
           multiline={true}
           placeholder='עד 500 תווים'
         />
+        <View style={{flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between'}}>
+            <Text style={styles.label}>כמות משתתפים מינימלית:</Text>
+            <TextInput
+              style={[
+                styles.input,
+                !fieldValidations.minNumber && styles.invalidInput,
+                {height: 30, width: 60, marginRight: 15}
+              ]}
+              value={minNumber}
+              keyboardType='numeric'
+              maxLength={7}
+              onChangeText={setMinNumber}
+              />
+          </View>
         <View>
           <View style={{flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between'}}>
             <Text style={styles.label}>כמות משתתפים מקסימלית:</Text>
@@ -220,25 +236,19 @@ const NewProjectScreen = () => {
               ]}
               value={maxNumber}
               keyboardType='numeric'
+              maxLength={7}
               onChangeText={setMaxNumber}
             />
           </View>
-          <View style={{flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Text style={styles.label}>כמות משתתפים מינימלית:</Text>
-            <TextInput
-              style={[
-                styles.input,
-                !fieldValidations.minNumber && styles.invalidInput,
-                {height: 30, width: 60, marginRight: 15}
-              ]}
-              value={minNumber}
-              keyboardType='numeric'
-              maxLength={999999999}
-              onChangeText={setMinNumber}
-              />
-          </View>
         </View>
-        <View style={{alignItems: 'flex-end'}}>
+        <Text style={[styles.label, {marginTop: 10}]}>מיקום (לא חובה):</Text>
+        <TextInput
+          style={
+            styles.input}
+          value={projectLocation}
+          onChangeText={setProjectLocation}
+        />
+        <View style={{alignItems: 'flex-end', marginBottom: 20}}>
           <Text style={styles.label}>תאריך (לא חובה):</Text>
           {selectedDate ? (
             <Text style={styles.selectedDate}>{selectedDate.toLocaleDateString()}</Text>
@@ -257,11 +267,12 @@ const NewProjectScreen = () => {
               value={selectedDate || new Date()}
               mode="date"
               display="default"
+              minimumDate={new Date()}
               onChange={handleDateChange}
             />
           )}
         </View>
-        <View style={{alignItems: 'flex-end'}}>
+        <View style={{alignItems: 'flex-end', marginBottom: 20}}>
           <Text style={styles.label}>שעה (לא חובה):</Text>
           {selectedTime ? (
             <Text style={styles.selectedDate}>{selectedTime.toLocaleTimeString()}</Text>
@@ -284,13 +295,6 @@ const NewProjectScreen = () => {
             />
           )}
         </View>
-        <Text style={[styles.label, {marginTop: 10}]}>מיקום (לא חובה):</Text>
-        <TextInput
-          style={
-            styles.input}
-          value={projectLocation}
-          onChangeText={setProjectLocation}
-        />
         <TouchableOpacity onPress={handleSubmit} activeOpacity={0.7} style={styles.appButtonContainer}>
           <Text style={styles.appButtonText}>צור מיזם</Text>
         </TouchableOpacity>
@@ -347,7 +351,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     alignSelf: "center",
-    textTransform: "uppercase"
+    textTransform: "uppercase",
   },
   invalidInput: {
     borderWidth: 1,

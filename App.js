@@ -37,7 +37,6 @@ export default function App() {
         initialRouteName="Home"
         backBehavior="history"
         screenOptions={{
-          // headerShown: false,
           tabBarStyle: {
             height: "10%",
             justifyContent: "center",
@@ -79,7 +78,7 @@ export default function App() {
           component={NewProjectScreen}
           options={({ navigation }) => ({
             headerStyle: {
-              backgroundColor: "#33B8FF",
+              backgroundColor: "#4682B4",
             },
             headerTitleStyle: {
               color: "white",

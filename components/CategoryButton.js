@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
+    textAlign: 'right'
   },
   button: {
     borderWidth: 1,
