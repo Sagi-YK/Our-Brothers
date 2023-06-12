@@ -12,8 +12,8 @@ import {
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MyEvents from "./MyEvents";
-import UpdateData from "./UpdateData";
 import LoginNavScreen from "./LoginNavScreen";
+import EditEvent from "./EditEvent";
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
@@ -48,7 +48,11 @@ const ProfileScreen = ({ navigation }) => {
         component={MyEvents}
         options={{ headerShown: false }}
       />
-      {/* <Stack.Screen name="UpdateData" component={UpdateData} /> */}
+      <Stack.Screen
+        name="EditEvent"
+        component={EditEvent}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };
@@ -69,10 +73,6 @@ const ProfilePage = ({ navigation }) => {
       Alert.alert("", "דרושה התחברות למערכת", [{ text: "אישור" }]);
     }
   };
-
-  // const goToPage3 = () => {
-  //   navigation.navigate("UpdateData");
-  // };
 
   const goToPage4 = () => {
     Alert.alert("", "להמשיך בתהליך התנתקות?", [
@@ -136,9 +136,6 @@ const ProfilePage = ({ navigation }) => {
         <TouchableOpacity style={styles.button} onPress={goToPage2}>
           <Text style={styles.buttonText}>המיזמים שלי</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.button} onPress={goToPage3}>
-          <Text style={styles.buttonText}>עדכון פרטים</Text>
-        </TouchableOpacity> */}
       </View>
     </View>
   );

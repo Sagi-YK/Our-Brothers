@@ -51,7 +51,6 @@ const AdminManagment = () => {
   }, []);
 
   const deleteUser = async (user) => {
-    console.log(user);
     const userRef = doc(db, `users/${user.id}`);
     updateDoc(userRef, { isdeleted: true });
 

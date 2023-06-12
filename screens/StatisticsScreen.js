@@ -33,7 +33,6 @@ function StatisticsScreen(props) {
 
       // snapshot is object of the collection that contain the data of the collection (docs)
       next: (snapshot) => {
-        //console.log(snapshot.docs.length)
         let num_of_active_projects = 0;
         let catgory_statistics = [];
         for (let index = 0; index < 32; index++) {
@@ -185,15 +184,9 @@ function StatisticsScreen(props) {
           }
         });
         set_catgory_Statistics(catgory_statistics);
-        console.log(catgory_statistics);
-        console.log(catgory_statistics[0] / num_of_particanptns);
-        console.log(catgory_statistics[1] / num_of_particanptns);
-        console.log(catgory_statistics[2] / num_of_particanptns);
         statistics.push(num_of_active_projects);
         setStatistics(statistics);
         set_num_of_particanptns_Statistics(num_of_particanptns);
-        // console.log(statistics[0])
-        // console.log(statistics[1])
       },
     });
 
@@ -202,9 +195,7 @@ function StatisticsScreen(props) {
       // snapshot is object of the collection that contain the data of the collection (docs)
 
       next: (snapshot) => {
-        //console.log(snapshot.docs.length)
         set_user_Statistics(snapshot.docs.length);
-        //console.log(user_statistics)
       },
     });
 

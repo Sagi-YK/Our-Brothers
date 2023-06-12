@@ -68,11 +68,7 @@ const HomeScreen = () => {
     const user = auth.currentUser;
     if (user) {
       // User is signed in, perform the action
-      console.log("user log in");
       const uEmail = user.email; // save the current user email
-      console.log(uEmail);
-
-      console.log(Myparticipants);
       // check if we have participants to this project and concat event.participants to  mtparticipants
       const allData = await getDocs(usersRef);
       let flag = false;
@@ -116,9 +112,7 @@ const HomeScreen = () => {
       //const allData=await getDocs(usersRef);
       let dealisArray = [];
       let userId;
-      console.log("id  " + event.id);
       dealisArray.push(event.id);
-      console.log("event  " + event);
       // add the event to user events
       allData.forEach((doc) => {
         if (doc.data().email == uEmail) {
@@ -133,7 +127,6 @@ const HomeScreen = () => {
       updateDoc(docRefUsers, { myEvents: dealisArray });
     } else {
       // User is not signed in, handle the case accordingly
-      console.log("user not log in");
       Alert.alert("", "עלייך להתחבר תחילה", [
         {
           text: "סגור",
@@ -169,7 +162,10 @@ const HomeScreen = () => {
             currentTimestamp.nanoseconds
           );
           const itemTimestamp = item.data().date;
-          if (item.data().status && itemTimestamp >= previousDayTimestamp) {
+          if (
+            item.data().status &&
+            (itemTimestamp >= previousDayTimestamp || itemTimestamp == null)
+          ) {
             state.push({
               id: item.id,
               ...item.data(),

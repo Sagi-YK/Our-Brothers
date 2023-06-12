@@ -26,7 +26,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
-const MyEvents = () => {
+const MyEvents = ({ navigation }) => {
   const [events, setEvents] = useState([]);
   const [user, setUser] = useState({});
   const userRef = collection(db, "users");
@@ -48,7 +48,6 @@ const MyEvents = () => {
           }
         });
         setUser(user);
-        console.log(user);
 
         subscriber = onSnapshot(projectRef, {
           next: (snapshot) => {
@@ -64,8 +63,10 @@ const MyEvents = () => {
                     currentTimestamp.nanoseconds
                   );
                   const itemTimestamp = item.data().date;
-                  console.log(item.data().date);
-                  if (itemTimestamp >= previousDayTimestamp) {
+                  if (
+                    itemTimestamp >= previousDayTimestamp ||
+                    itemTimestamp == null
+                  ) {
                     events.push({
                       id: item.id,
                       name: item.data().name,
@@ -74,13 +75,18 @@ const MyEvents = () => {
                       creator: item.data().creator,
                       participants: item.data().participants,
                       numpraticipants: item.data().numpraticipants,
+                      category: item.data().category,
+                      advertiserName: item.data().advertiserName,
+                      description: item.data().description,
+                      maxNum: item.data().maxNum,
+                      minNum: item.data().minNum,
+                      location: item.data().location,
                     });
                   }
                 }
               });
             });
             setEvents(events);
-            console.log(events);
           },
         });
       } catch (error) {
@@ -223,7 +229,41 @@ const MyEvents = () => {
                   >
                     <Text style={styles.buttonText}>ביטול מיזם</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => {
+                      Alert.alert(
+                        "",
+                        "לערוך את המיזם?",
+                        [
+                          {
+                            text: "לא",
+                            style: "cancel",
+                          },
+                          {
+                            text: "כן",
+                            onPress: () => {
+                              navigation.navigate("EditEvent", {
+                                projectId: item.id,
+                                name: item.name,
+                                category: item.category,
+                                advertiserName: item.advertiserName,
+                                description: item.description,
+                                maxNum: item.maxNum.toString(),
+                                minNum: item.minNum.toString(),
+                                date: item.date,
+                                time: item.time,
+                                location: item.location,
+                                creator: item.creator,
+                                participants: item.participants,
+                              });
+                            },
+                          },
+                        ],
+                        { cancelable: true }
+                      );
+                    }}
+                  >
                     <Text style={styles.buttonText}>עריכת מיזם</Text>
                   </TouchableOpacity>
                 </View>

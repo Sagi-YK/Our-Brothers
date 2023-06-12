@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Button, FlatList } from "react-native";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -10,10 +9,8 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import ProjectApproval from "../components/ProjectApproval";
-import { db, app } from "../firebaseConfig";
+import { db } from "../firebaseConfig";
 import {
-  addDoc,
   collection,
   deleteDoc,
   doc,
@@ -22,7 +19,7 @@ import {
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import AppInputText from "../components/AppInputText";
+
 // import * as Device from 'expo-device';
 import * as Notifications from "expo-notifications";
 
@@ -63,7 +60,10 @@ function ManagerApproval(props) {
             currentTimestamp.nanoseconds
           );
           const itemTimestamp = item.data().date;
-          if (!item.data().status && itemTimestamp >= previousDayTimestamp) {
+          if (
+            !item.data().status &&
+            (itemTimestamp >= previousDayTimestamp || itemTimestamp == null)
+          ) {
             state.push({
               id: item.id,
               ...item.data(),
@@ -71,29 +71,11 @@ function ManagerApproval(props) {
           }
         });
         setState(state);
-        console.log(state);
       },
     });
 
     return () => subscriber();
   }, []);
-
-  // useEffect(() => {
-  // registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
-  //     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-  //       setNotification(notification);
-  //     });
-
-  //     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-  //       console.log(response);
-  //     });
-
-  //     return () => {
-  //       Notifications.removeNotificationSubscription(notificationListener.current);
-  //       Notifications.removeNotificationSubscription(responseListener.current);
-  //     };
-  //   }, []);
 
   // when user press on aprrove button ask him if he sures he wants to approve project,
   //and if he does goes to aprroveProject function
@@ -117,7 +99,6 @@ function ManagerApproval(props) {
         tokens.push(doc.data().token);
       }
     });
-    console.log(tokens);
 
     if (tokens.length > 0) {
       fetch("https://exp.host/--/api/v2/push/send", {
@@ -128,7 +109,7 @@ function ManagerApproval(props) {
         body: JSON.stringify({
           to: tokens,
           title: "מיזם חדש",
-          body: "מיזם חדש עלה עלה לאוויר!",
+          body: "מיזם חדש עלה לאוויר!",
         }),
       });
       setModalVisible(false);
@@ -197,7 +178,6 @@ function ManagerApproval(props) {
 
   return (
     <View style={styles.container}>
-      {console.log("hi")}
       {state.length === 0 ? (
         <View style={styles.containerMessage}>
           <Text style={styles.message}>אין מיזמים שמחכים לאישור </Text>
@@ -281,15 +261,6 @@ function ManagerApproval(props) {
       )}
     </View>
   );
-  {
-    /* <FlatList 
-    data={state}
-    keyExtractor={(item)=>item.id}
-    renderItem={({ item }) => !item.isAprrove? <ProjectApproval text={item.name} aprrovePress={()=>handleAprrove(item)} cancellPress={()=>handleCancell(item)} />: null} 
-    
-
-    /> */
-  }
 }
 
 const styles = StyleSheet.create({
