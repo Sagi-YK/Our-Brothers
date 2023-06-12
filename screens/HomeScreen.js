@@ -34,7 +34,7 @@ const projectRef = collection(db, "projects"); // reference to collection projec
 const usersRef = collection(db, "users"); // reference to collection users
 
 const image = {
-  uri: "https://img.freepik.com/free-vector/simple-green-gradient-background-vector-business_53876-168091.jpg?w=740&t=st=1686128396~exp=1686128996~hmac=51915d651f86a00337ddcda83ce0186c8f26d1ef2867ebd13194f98bb8bf5e87",
+  uri: "https://img.freepik.com/free-psd/light-brown-abstract-background-dynamic-flowing-waves_24972-2049.jpg?w=1480&t=st=1686585213~exp=1686585813~hmac=65c019e9eaee4736d2d549baef4275623f9c0ab0385dab7236d13ad3936cb711",
 };
 const image2 = {
   uri: "https://img.freepik.com/free-photo/background-gradient-lights_23-2149305012.jpg?w=740&t=st=1685896597~exp=1685897197~hmac=d2aab27fae632b3ac35a5a1554662a3d5781b0af9e322c10977a8f7353b8281b",
@@ -53,7 +53,35 @@ const HomeScreen = () => {
     setModalVisible(true);
   };
 
-  const handleAdminPress = (event) => {
+  const handleAdminPress = async (event) => {
+    let tokens = [];
+    const querySnapshot = await getDocs(usersRef);
+    querySnapshot.forEach((doc) => {
+      event.participants.forEach((userEmail) => {
+        if (userEmail === doc.data().email) {
+          if (userEmail !== event.creator) {
+            if (doc.data().token) {
+              tokens.push(doc.data().token);
+            }
+          }
+        }
+      });
+    });
+
+    if (tokens.length > 0) {
+      fetch("https://exp.host/--/api/v2/push/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: tokens,
+          title: "מיזם נמחק",
+          body: "מיזם שנרשמת אליו נמחק",
+        }),
+      });
+    }
+
     // setSelectedEvent(event);
     setModalVisible(false);
     cancel(event.id);
@@ -213,10 +241,10 @@ const HomeScreen = () => {
             opacity: 10,
           }}
         >
-          {/* <Image
-          source={require('./assets/my_event.png')}
-          style={{ width: 320, height:100  }}
-        /> */}
+          <Image
+            source={require("../assets/theEvent.png")}
+            style={{ width: 325, height: 50 }}
+          />
         </View>
         <ScrollView style={styles.Scroll}>
           <View style={styles.mainPage}>
@@ -228,8 +256,8 @@ const HomeScreen = () => {
               >
                 <View>
                   <Text style={styles.EventText}>{event.name}</Text>
-                  <Text style={styles.EventText}>
-                    {event.date ? extractDate(event.date) : ""}
+                  <Text style={styles.EventTextTime}>
+                    {event.date ? extractDate(event.date) : "טרם נקבע תאריך"}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -242,7 +270,11 @@ const HomeScreen = () => {
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <ScrollView style={styles.modalContent}>
+              <ScrollView
+                style={styles.modalContent}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              >
                 <Text style={styles.modalText}>
                   <Text style={{ fontWeight: "bold" }}>שם המיזם:{"\n"}</Text>{" "}
                   {selectedEvent.name}
@@ -291,7 +323,7 @@ const HomeScreen = () => {
                     style={styles.joinButtonText}
                     onPress={() => handleEventPress(selectedEvent)}
                   >
-                    הצטרף למיזם
+                    הצטרף
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -346,7 +378,7 @@ const styles = StyleSheet.create({
     // flex: 7,
     paddingTop: 0,
     // height: deviceHeight,
-    // marginTop: deviceHeight / 8,
+    // marginTop: 20,
     marginBottom: deviceHeight / 8,
     width: deviceWidth,
     alignItems: "center",
@@ -354,6 +386,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red ',
   },
   image: {
+    paddingTop: deviceHeight / 12,
     flex: 1,
     resizeMode: "cover",
   },
@@ -365,6 +398,7 @@ const styles = StyleSheet.create({
 
   Scroll: {
     paddingTop: 0,
+    maxHeight: deviceHeight - deviceHeight / 8 - deviceHeight / 8, // Adjust the maxHeight according to your needs
   },
   footer: {
     // flex: 1,
@@ -400,6 +434,11 @@ const styles = StyleSheet.create({
   EventText: {
     fontSize: 25,
     color: "white",
+    textAlign: "center",
+  },
+  EventTextTime: {
+    fontSize: 20,
+    color: "#A6AAAA",
     textAlign: "center",
   },
   buttonfootrText: {
@@ -457,7 +496,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   CloseButton: {
-    backgroundColor: "#f44336",
+    backgroundColor: "black",
     borderRadius: 15,
     padding: 10,
     elevation: 2,
@@ -476,7 +515,7 @@ const styles = StyleSheet.create({
     width: deviceWidth / 3,
   },
   DeleteButton: {
-    backgroundColor: "black",
+    backgroundColor: "#f44336",
     borderRadius: 15,
     padding: 10,
     elevation: 2,

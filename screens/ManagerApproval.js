@@ -207,7 +207,11 @@ function ManagerApproval(props) {
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <ScrollView style={styles.modalContent}>
+              <ScrollView
+                style={styles.modalContent}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              >
                 <Text style={styles.modalText}>
                   <Text style={{ fontWeight: "bold" }}>שם המיזם:</Text>{" "}
                   {selectedEvent.name}
@@ -226,18 +230,21 @@ function ManagerApproval(props) {
                   <Text style={{ fontWeight: "bold" }}>פרטים:</Text>{" "}
                   {selectedEvent.description}
                   {"\n\n"}
-                  <Text style={{ fontWeight: "bold" }}>פרטי יוצר:</Text>{" "}
+                  <Text style={{ fontWeight: "bold" }}>פרטי קשר:</Text>{" "}
                   {selectedEvent.creator}
                   {"\n\n"}
                 </Text>
               </ScrollView>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.CloseButton}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.CloseButtonText}>סגור</Text>
+                <TouchableOpacity style={styles.joinButton}>
+                  <Text
+                    style={styles.joinButtonText}
+                    onPress={() => handleAprrove(selectedEvent)}
+                  >
+                    אישור מיזם
+                  </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.cancellButton}>
                   <Text
                     style={styles.CloseButtonText}
@@ -246,13 +253,13 @@ function ManagerApproval(props) {
                     ביטול מיזם
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.joinButton}>
-                  <Text
-                    style={styles.joinButtonText}
-                    onPress={() => handleAprrove(selectedEvent)}
-                  >
-                    אישור מיזם
-                  </Text>
+              </View>
+              <View style={styles.adminButtonContainer}>
+                <TouchableOpacity
+                  style={styles.CloseButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.CloseButtonText}>סגור</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -341,7 +348,7 @@ const styles = StyleSheet.create({
   joinButton: {
     backgroundColor: "#32CD32",
     borderRadius: 15,
-    padding: 10,
+    padding: 8,
     elevation: 2,
     flex: 1,
     margin: 10,
@@ -352,9 +359,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   CloseButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "black",
     borderRadius: 15,
-    padding: 12,
+    padding: 9,
     elevation: 2,
     flex: 1,
     margin: 10,
@@ -362,7 +369,7 @@ const styles = StyleSheet.create({
   cancellButton: {
     backgroundColor: "#f44336",
     borderRadius: 15,
-    padding: 10,
+    padding: 8,
     elevation: 2,
     flex: 1,
     margin: 10,
@@ -371,6 +378,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  adminButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: deviceWidth / 3,
   },
 });
 

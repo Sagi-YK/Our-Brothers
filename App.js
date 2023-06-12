@@ -118,7 +118,7 @@ export default function App() {
               alignItems: "center",
               width: "100%",
             },
-            headerShown: true,
+            headerShown: false,
             headerTitle: "האחים שלנו",
             tabBarLabel: () => null,
             tabBarIcon: ({ color, size }) => (

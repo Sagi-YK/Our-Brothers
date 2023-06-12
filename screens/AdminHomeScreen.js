@@ -13,7 +13,16 @@ import AdminManagment from "./AdminManagment";
 
 const Stack = createStackNavigator();
 
-const AdminHomeScreen = () => {
+const AdminHomeScreen = ({ navigation }) => {
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      // Navigate to "MyProfile"
+      navigation.navigate("MyProfile");
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <Stack.Navigator>
       <Stack.Screen
