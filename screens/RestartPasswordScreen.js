@@ -15,7 +15,7 @@ import AppInputText from "../components/AppInputText";
 import AppButton from "../components/AppButton";
 
 const validateSchema = Yup.object().shape({
-  email: Yup.string().required().email().label("Email"),
+  email: Yup.string().email("אימייל לא תקין!").required("שדה חובה!").label("Email"),
 });
 
 function RestartPasswordScreen(props) {
@@ -91,10 +91,10 @@ const styles = StyleSheet.create({
   },
   secondButton: {
     borderWidth: 0,
-    backgroundColor: "#0782F9",
+    backgroundColor: "#4682B4",
   },
   secondButtonText: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: "700",
   },
 });

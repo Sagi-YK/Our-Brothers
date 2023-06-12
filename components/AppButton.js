@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, TouchableHighlight, Text } from "react-native";
+import { View, StyleSheet, TouchableHighlight, Text, TouchableOpacity } from "react-native";
 import AppText from "./AppText";
 import AppIcon from "./AppIcon";
 
@@ -14,38 +14,32 @@ function AppButton({
   icon_color,
 }) {
   return (
-    <TouchableHighlight
+    <TouchableOpacity
       style={[styles.container, style, secondary]}
+      activeOpacity={0.7}
       onPress={onPress}
-    >
+      >
       {text !== undefined ? (
         <AppText text={text} style={TextStyle}></AppText>
-      ) : (
-        <AppIcon
+        ) : (
+          <AppIcon
           icon_name={icon_name}
           icon_size={icon_size}
           icon_color={icon_color}
-        ></AppIcon>
-      )}
-    </TouchableHighlight>
+          ></AppIcon>
+          )}
+    </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    height: 50,
-    // width: 80,
-    //borderRadius:15,
-    backgroundColor: "#fc5c65",
+    width: 270,
+    height: 55,
+    marginBottom: 30,
+    borderRadius: 20,
+    backgroundColor: "#007aff",
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 3,
-    borderColor: "black",
-
-    width: "70%",
-    borderRadius: 15,
-
-    marginBottom: 40,
   },
 });
 

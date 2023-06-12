@@ -124,16 +124,16 @@ const ProfilePage = ({ navigation }) => {
       </View>
       <View style={styles.containerButtons}>
         {!login ? (
-          <TouchableOpacity style={styles.button} onPress={goToPage1}>
+          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={goToPage1}>
             <Text style={styles.buttonText}>התחברות</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={styles.button} onPress={goToPage4}>
+          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={goToPage4}>
             <Text style={styles.buttonText}>התנתקות</Text>
           </TouchableOpacity>
         )}
 
-        <TouchableOpacity style={styles.button} onPress={goToPage2}>
+        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={goToPage2}>
           <Text style={styles.buttonText}>המיזמים שלי</Text>
         </TouchableOpacity>
       </View>
@@ -163,16 +163,16 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 250,
-    height: 60,
+    height: 55,
     marginBottom: 30,
-    borderRadius: 10,
-    backgroundColor: "#007aff",
+    borderRadius: 20,
+    backgroundColor: "#4682B4",
     justifyContent: "center",
     alignItems: "center",
   },
   buttonText: {
     color: "#ffffff",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
   },
   headText: {
