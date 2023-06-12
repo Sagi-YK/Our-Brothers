@@ -13,6 +13,8 @@ import {
   View,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
+  Text,
 } from "react-native";
 import AppInputText from "../components/AppInputText";
 import AppButton from "../components/AppButton";
@@ -20,12 +22,18 @@ import AppText from "../components/AppText";
 import { doc, getDocs, collection } from "firebase/firestore";
 
 const validateSchema = Yup.object().shape({
-  email: Yup.string().required().email().label("email"),
-  Password: Yup.string().required().min(4).label("Password"),
+  email: Yup.string().email("אימייל לא תקין!").required("שדה חובה!").label("Email"),
+  Password: Yup.string().required("שדה חובה!").min(6,"מינימום 6 תווים!").matches(
+    /^(?=.*[a-z])(?=.*[A-Z])/,
+    "הסיסמא חייבת להכיל לפחות אות אחת גדולה ואות אחת קטנה!"
+  ).label("Password"),
 });
 const userRef = collection(db, "users");
 
 function LogInScreen(props) {
+  const goToPage1 = () => {
+    navigation.navigate("Sign-Up");
+  };
   // const [log_in_value,set_log_in_value] = useState('')
 
   // const [Password_value,set_password_value] = useState('')
@@ -110,19 +118,13 @@ function LogInScreen(props) {
                 iconName={"lock"}
               ></AppInputText>
 
-              <AppButton
-                text={"התחבר"}
-                style={styles.button}
-                TextStyle={styles.buttonText}
-                onPress={handleSubmit}
-              ></AppButton>
+              <TouchableOpacity activeOpacity={0.7} style={styles.button1} onPress={handleSubmit}>
+                <Text style={styles.buttonText1}>התחבר</Text>
+              </TouchableOpacity>
 
-              <AppButton
-                text={"הרשמה"}
-                style={styles.secondButton}
-                TextStyle={styles.secondButtonText}
-                onPress={handleSignUpPress}
-              ></AppButton>
+              <TouchableOpacity activeOpacity={0.7} style={styles.button2} onPress={handleSignUpPress}>
+                <Text style={styles.buttonText2}>הרשמה</Text>
+              </TouchableOpacity>
 
               <AppText
                 text={"שכחת סיסמא?"}
@@ -143,31 +145,41 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  button: {
-    borderWidth: 0,
-    // marginBottom:40,
-    backgroundColor: "#0782F9",
-  },
-  buttonText: {
-    fontSize: 25,
-    fontWeight: "700",
-  },
-  secondButton: {
-    backgroundColor: "white",
-    borderColor: "#0782F9",
-    borderWidth: 2,
-  },
-  secondButtonText: {
-    color: "#0782F9",
-    fontWeight: 700,
-    fontSize: 25,
-  },
   text: {
     color: "#0782F9",
     fontWeight: "700",
-    fontSize: 25,
+    fontSize: 20,
     textDecorationLine: "underline",
+  },
+  button1: {
+    width: 270,
+    height: 55,
+    marginBottom: 30,
+    borderRadius: 20,
+    backgroundColor: "#4682B4",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button2: {
+    width: 270,
+    height: 55,
+    marginBottom: 30,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "#4682B4",
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonText1: {
+    color: "#ffffff",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  buttonText2: {
+    color: "#4682B4",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
 

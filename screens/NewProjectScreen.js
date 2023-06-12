@@ -180,7 +180,7 @@ const NewProjectScreen = () => {
           ]}
           value={projectName}
           onChangeText={setProjectName}
-          maxLength={50}
+          maxLength={20}
         />
         <Text style={styles.label}>שם המפרסם:</Text>
         <TextInput

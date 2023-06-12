@@ -314,12 +314,13 @@ const HomeScreen = () => {
               </ScrollView>
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
+                  activeOpacity={0.7}
                   style={styles.CloseButton}
                   onPress={() => setModalVisible(false)}
                 >
                   <Text style={styles.CloseButtonText}>סגור</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.joinButton}>
+                <TouchableOpacity activeOpacity={0.7} style={styles.joinButton}>
                   <Text
                     style={styles.joinButtonText}
                     onPress={() => handleEventPress(selectedEvent)}
@@ -427,8 +428,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 15,
-    borderWidth: 2,
-    borderColor: "#00a099",
+    // borderWidth: 2,
+    // borderColor: "#00a099",
     position: "relative",
     overflow: "hidden",
   },
@@ -484,7 +485,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   joinButton: {
-    backgroundColor: "#32CD32",
+    backgroundColor: "#4682B4",
     borderRadius: 15,
     padding: 10,
     elevation: 2,
@@ -497,7 +498,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   CloseButton: {
-    backgroundColor: "black",
+    backgroundColor: "#ab1818",
     borderRadius: 15,
     padding: 10,
     elevation: 2,

@@ -17,6 +17,8 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
+  TouchableOpacity,
+  Text,
 } from "react-native";
 import AppButton from "../components/AppButton";
 import AppInputText from "../components/AppInputText";
@@ -38,18 +40,19 @@ Notifications.setNotificationHandler({
 });
 
 const validateSchema = Yup.object().shape({
-  email: Yup.string().required().email().label("Email"),
-  Password: Yup.string().required().min(6).matches(
+  email: Yup.string().email("אימייל לא תקין!").required("שדה חובה!").label("Email"),
+  Password: Yup.string().required("שדה חובה!").min(6,"מינימום 6 תווים!").matches(
     /^(?=.*[a-z])(?=.*[A-Z])/,
-    "Password must contain both lowercase and uppercase letters"
+    "הסיסמא חייבת להכיל לפחות אות אחת גדולה ואות אחת קטנה!"
   ).label("Password"),
   confirm: Yup.string()
-    .required()
+    .required("שדה חובה!")
     .min(6)
     .label("Confirm Password")
-    .oneOf([Yup.ref("Password")], "Passwords must match"),
-  name: Yup.string().required(),
+    .oneOf([Yup.ref("Password")], "סיסמאות לא תואמות!"),
+  name: Yup.string().min(2, "שם לא תקין!").required("שדה חובה!"),
 });
+
 function SignUpScreen() {
   const [is_check, set_check] = useState(false);
   const navigation = useNavigation();
@@ -123,7 +126,7 @@ function SignUpScreen() {
           >
             <View style={styles.container}>
               <AppInputText
-                place_holder={"name"}
+                place_holder={"Name"}
                 onChangeText={handleChange("name")}
                 value={values.name}
                 error={errors.name}
@@ -133,7 +136,7 @@ function SignUpScreen() {
               ></AppInputText>
 
               <AppInputText
-                place_holder={"email"}
+                place_holder={"Email"}
                 onChangeText={handleChange("email")}
                 value={values.email}
                 error={errors.email}
@@ -154,7 +157,7 @@ function SignUpScreen() {
               ></AppInputText>
 
               <AppInputText
-                place_holder={"confirm-Password"}
+                place_holder={"Confirm Password"}
                 onChangeText={handleChange("confirm")}
                 value={values.confirm}
                 error={errors.confirm}
@@ -172,12 +175,10 @@ function SignUpScreen() {
                 isCheck={is_check}
               ></AppCheckBox>
 
-              <AppButton
-                text={"הרשמה"}
-                style={styles.secondButton}
-                TextStyle={styles.secondButtonText}
-                onPress={handleSubmit}
-              ></AppButton>
+              <TouchableOpacity activeOpacity={0.7} style={styles.button2} onPress={handleSubmit}>
+                <Text style={styles.buttonText2}>הרשמה</Text>
+              </TouchableOpacity>
+
             </View>
           </TouchableWithoutFeedback>
         )}
@@ -220,20 +221,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  secondButton: {
-    borderWidth: 0,
-    backgroundColor: "#0782F9",
-    //  justifyContent: "center",
-    //  alignItems: "center",
-     //paddingBottom:20
-  },
-  secondButtonText: {
-    fontSize: 25,
-    fontWeight: "700",
+  button2: {
+    width: 270,
+    height: 55,
+    marginBottom: 30,
+    borderRadius: 20,
+    backgroundColor: "#4682B4",
     justifyContent: "center",
-    alignItems: "center"
-    
-    
+    alignItems: "center",
+  },
+  buttonText2: {
+    color: "#ffffff",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
 
