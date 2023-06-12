@@ -247,6 +247,7 @@ const NewProjectScreen = () => {
             styles.input}
           value={projectLocation}
           onChangeText={setProjectLocation}
+          maxLength={50}
         />
         <View style={{alignItems: 'flex-end', marginBottom: 20}}>
           <Text style={styles.label}>תאריך (לא חובה):</Text>
