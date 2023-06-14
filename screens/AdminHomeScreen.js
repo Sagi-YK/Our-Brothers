@@ -2,7 +2,14 @@
  * this component will display the home page for the admin
  */
 
-import { View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Alert,
+  ImageBackground,
+} from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import ProfileScreen from "./ProfileScreen";
 import StatisticsScreen from "./StatisticsScreen";
@@ -81,25 +88,30 @@ const AdminPage = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerHead}>
-        <Text style={styles.headText}>שלום מנהל</Text>
+    <ImageBackground
+      source={require("../assets/final_wood.jpg")}
+      style={styles.image}
+    >
+      <View style={styles.container}>
+        <View style={styles.containerHead}>
+          <Text style={styles.headText}>שלום מנהל</Text>
+        </View>
+        <View style={styles.containerButtons}>
+          <TouchableOpacity style={styles.button} onPress={goToPage1}>
+            <Text style={styles.buttonText}>התנתקות</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={goToPage2}>
+            <Text style={styles.buttonText}>ניהול משתמשים</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={goToPage3}>
+            <Text style={styles.buttonText}>אישור מיזמים</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={goToPage4}>
+            <Text style={styles.buttonText}>סטטיסטיקות ונתונים</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.containerButtons}>
-        <TouchableOpacity style={styles.button} onPress={goToPage1}>
-          <Text style={styles.buttonText}>התנתקות </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={goToPage2}>
-          <Text style={styles.buttonText}>ניהול משתמשים</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={goToPage3}>
-          <Text style={styles.buttonText}>אישור מיזמים</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={goToPage4}>
-          <Text style={styles.buttonText}>סטטיסטיקות ונתונים</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -108,27 +120,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "transparent", // Set background color to transparent
   },
   containerHead: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "transparent", // Set background color to transparent
     marginTop: 60,
   },
   containerButtons: {
     flex: 4,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "transparent", // Set background color to transparent
   },
   button: {
-    width: 200,
-    height: 60,
+    width: 250,
+    height: 55,
     marginBottom: 30,
-    borderRadius: 10,
-    backgroundColor: "#007aff",
+    borderRadius: 20,
+    backgroundColor: "#4682B4",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -141,6 +153,12 @@ const styles = StyleSheet.create({
     color: "#000",
     fontSize: 32,
     fontWeight: "bold",
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    width: "100%",
+    height: "100%",
   },
 });
 

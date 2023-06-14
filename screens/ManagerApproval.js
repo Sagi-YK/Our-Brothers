@@ -195,8 +195,8 @@ function ManagerApproval(props) {
             >
               <View>
                 <Text style={styles.EventText}>{event.name}</Text>
-                <Text style={styles.EventText}>
-                  {event.date ? extractDate(event.date) : ""}
+                <Text style={styles.EventTextTime}>
+                  {event.date ? extractDate(event.date) : "טרם נקבע תאריך"}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -236,21 +236,20 @@ function ManagerApproval(props) {
                 </Text>
               </ScrollView>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.joinButton}>
-                  <Text
-                    style={styles.joinButtonText}
-                    onPress={() => handleAprrove(selectedEvent)}
-                  >
-                    אישור מיזם
-                  </Text>
-                </TouchableOpacity>
-
                 <TouchableOpacity style={styles.cancellButton}>
                   <Text
                     style={styles.CloseButtonText}
                     onPress={() => handleCancell(selectedEvent)}
                   >
                     ביטול מיזם
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.joinButton}>
+                  <Text
+                    style={styles.joinButtonText}
+                    onPress={() => handleAprrove(selectedEvent)}
+                  >
+                    אישור מיזם
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -300,6 +299,11 @@ const styles = StyleSheet.create({
   EventText: {
     fontSize: 25,
     color: "white",
+    textAlign: "center",
+  },
+  EventTextTime: {
+    fontSize: 20,
+    color: "#A6AAAA",
     textAlign: "center",
   },
   message: {

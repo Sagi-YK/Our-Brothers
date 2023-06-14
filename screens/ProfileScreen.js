@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Alert,
   ImageBackground,
+  Image,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MyEvents from "./MyEvents";
@@ -114,30 +115,50 @@ const ProfilePage = ({ navigation }) => {
   }, []); // Empty dependency array ensures the effect runs only once
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerHead}>
-        {!login ? (
-          <Text style={styles.headText}>היי</Text>
-        ) : (
-          <Text style={styles.headText}>היי {name}</Text>
-        )}
-      </View>
-      <View style={styles.containerButtons}>
-        {!login ? (
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={goToPage1}>
-            <Text style={styles.buttonText}>התחברות</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={goToPage4}>
-            <Text style={styles.buttonText}>התנתקות</Text>
-          </TouchableOpacity>
-        )}
+    <ImageBackground
+      source={require("../assets/final_wood.jpg")}
+      style={styles.image}
+    >
+      <View style={styles.container}>
+        <View style={styles.welcomeCont}>
+          {!login ? (
+            <Text style={styles.headText}>היי</Text>
+          ) : (
+            <Text style={styles.headText}>היי {name}</Text>
+          )}
+        </View>
+        <View style={styles.buttonContainer}>
+          {!login ? (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.button}
+              onPress={goToPage1}
+            >
+              <Text style={styles.buttonText}>התחברות</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.button}
+              onPress={goToPage4}
+            >
+              <Text style={styles.buttonText}>התנתקות</Text>
+            </TouchableOpacity>
+          )}
 
-        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={goToPage2}>
-          <Text style={styles.buttonText}>המיזמים שלי</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.button}
+            onPress={goToPage2}
+          >
+            <Text style={styles.buttonText}>המיזמים שלי</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.logoContainer}>
+          <Image source={require("../assets/logo.png")} style={styles.logo} />
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -146,20 +167,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "transparent",
   },
-  containerHead: {
-    flex: 1,
+  welcomeCont: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
-    marginTop: 60,
+    marginTop: 50,
   },
-  containerButtons: {
-    flex: 4,
+  buttonContainer: {
+    flex: 2,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    marginTop: 70, // Increase the marginTop value to lower the buttons
+    marginBottom: 30,
   },
   button: {
     width: 250,
@@ -177,8 +197,26 @@ const styles = StyleSheet.create({
   },
   headText: {
     color: "#000",
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: "bold",
+    marginTop: 60,
+    marginBottom: 0,
+  },
+  logoContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  logo: {
+    width: 180,
+    height: 70,
+  },
+  image: {
+    flex: 1,
+    resizeMode: "cover",
+    width: "100%",
+    height: "100%",
   },
 });
 

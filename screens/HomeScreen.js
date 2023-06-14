@@ -12,8 +12,6 @@ import {
   Modal,
   Alert,
   ImageBackground,
-  Image,
-  VirtualizedList,
 } from "react-native";
 import { db, auth } from "../firebaseConfig";
 import {
@@ -34,8 +32,9 @@ const projectRef = collection(db, "projects"); // reference to collection projec
 const usersRef = collection(db, "users"); // reference to collection users
 
 const image = {
-  uri: "https://img.freepik.com/free-psd/light-brown-abstract-background-dynamic-flowing-waves_24972-2049.jpg?w=1480&t=st=1686585213~exp=1686585813~hmac=65c019e9eaee4736d2d549baef4275623f9c0ab0385dab7236d13ad3936cb711",
+  uri: "https://www.valeriaprops.co.il/wp-content/uploads/2022/02/R0259001466.jpeg",
 };
+
 const image2 = {
   uri: "https://img.freepik.com/free-photo/background-gradient-lights_23-2149305012.jpg?w=740&t=st=1685896597~exp=1685897197~hmac=d2aab27fae632b3ac35a5a1554662a3d5781b0af9e322c10977a8f7353b8281b",
 };
@@ -45,7 +44,6 @@ const HomeScreen = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [state, setState] = useState([]);
   const navigation = useNavigation();
-
   const [login, setLogin] = useState("");
 
   const handlePress = (event) => {
@@ -232,7 +230,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={image} style={styles.image}>
+      <ImageBackground
+        source={require("../assets/final_wood.jpg")}
+        style={styles.image}
+      >
         <View
           style={{
             flex: 1,
@@ -240,12 +241,7 @@ const HomeScreen = () => {
             alignItems: "center",
             opacity: 10,
           }}
-        >
-          <Image
-            source={require("../assets/theEvent.png")}
-            style={{ width: 325, height: 50 }}
-          />
-        </View>
+        ></View>
         <ScrollView style={styles.Scroll}>
           <View style={styles.mainPage}>
             {state.map((event) => (
@@ -388,7 +384,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red ',
   },
   image: {
-    paddingTop: deviceHeight / 12,
+    // paddingTop: deviceHeight / 12,
     flex: 1,
     resizeMode: "cover",
   },
@@ -400,7 +396,7 @@ const styles = StyleSheet.create({
 
   Scroll: {
     paddingTop: 0,
-    maxHeight: deviceHeight - deviceHeight / 8 - deviceHeight / 8, // Adjust the maxHeight according to your needs
+    maxHeight: deviceHeight - deviceHeight / 8 - deviceHeight / 12, // Adjust the maxHeight according to your needs
   },
   footer: {
     // flex: 1,
@@ -423,24 +419,31 @@ const styles = StyleSheet.create({
   Eventbutton: {
     width: deviceWidth - 40,
     height: 80,
-    backgroundColor: "#0c2e63",
+    // backgroundColor: "#00a099",
+    backgroundColor: "white",
+
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
     margin: 15,
-    // borderWidth: 2,
+    borderWidth: 3,
     // borderColor: "#00a099",
+    borderColor: "#0c2e63",
     position: "relative",
     overflow: "hidden",
   },
   EventText: {
     fontSize: 25,
-    color: "white",
+    color: "#0c2e63",
+    // color: "white",
     textAlign: "center",
+    fontWeight: "bold",
   },
   EventTextTime: {
     fontSize: 20,
-    color: "#A6AAAA",
+    color: "#0c2e63",
+    // color: "white",
+
     textAlign: "center",
   },
   buttonfootrText: {
@@ -517,7 +520,7 @@ const styles = StyleSheet.create({
     width: deviceWidth / 3,
   },
   DeleteButton: {
-    backgroundColor: "#f44336",
+    backgroundColor: "black",
     borderRadius: 15,
     padding: 10,
     elevation: 2,

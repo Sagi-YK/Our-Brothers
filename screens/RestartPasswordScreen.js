@@ -15,7 +15,10 @@ import AppInputText from "../components/AppInputText";
 import AppButton from "../components/AppButton";
 
 const validateSchema = Yup.object().shape({
-  email: Yup.string().email("אימייל לא תקין!").required("שדה חובה!").label("Email"),
+  email: Yup.string()
+    .email("אימייל לא תקין!")
+    .required("שדה חובה!")
+    .label("Email"),
 });
 
 function RestartPasswordScreen(props) {
@@ -26,7 +29,7 @@ function RestartPasswordScreen(props) {
 
     await sendPasswordResetEmail(auth, email)
       .then(() => {
-        Alert.alert("", "נשלח קישור איפוס סיסמא לאימייל", [
+        Alert.alert("", "נשלח לאימייל קישור לאיפוס סיסמא ", [
           { text: "אישור", onPress: () => navigation.navigate("Home") },
         ]);
       })

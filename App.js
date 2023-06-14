@@ -66,7 +66,7 @@ export default function App() {
               width: "100%",
             },
             headerShown: true,
-            headerTitle: "האחים שלנו",
+            headerTitle: "המיזם",
             tabBarLabel: () => null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="account" color={color} size={30} />
@@ -118,8 +118,8 @@ export default function App() {
               alignItems: "center",
               width: "100%",
             },
-            headerShown: false,
-            headerTitle: "האחים שלנו",
+            headerShown: true,
+            headerTitle: "המיזם",
             tabBarLabel: () => null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={30} />
