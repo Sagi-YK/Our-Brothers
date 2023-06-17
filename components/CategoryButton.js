@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Platform } from 'react-native';
 
 const CategoryDropdown = ({ selectedCategory, onSelectCategory, isCategorySelected, setIsCategorySelected }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -57,6 +57,7 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory, isCategorySelect
         animationType="fade"
         transparent={true}
         onRequestClose={() => setDropdownVisible(false)}
+        
       >
         <TouchableOpacity
           style={styles.modalBackground}
@@ -71,7 +72,7 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory, isCategorySelect
                   onPress={() => handleCategoryPress(category)}
                   style={styles.categoryItem}
                 >
-                  <Text>{category}</Text>
+                  <Text style = {{textAlign: Platform.OS ==='ios'?'right':null}}>{category}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -85,12 +86,14 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory, isCategorySelect
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
+    
+    
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
-    textAlign: 'right'
+    textAlign: Platform.OS === 'ios'? "right" : null,
   },
   button: {
     borderWidth: 1,
@@ -109,6 +112,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
+
   },
   modalBackground: {
     flex: 1,
@@ -122,8 +126,11 @@ const styles = StyleSheet.create({
     padding: 20,
     minWidth: 200,
     maxHeight: '60%',
+    
   },
   categoryItem: {
+     
+    
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderBottomWidth: 1,

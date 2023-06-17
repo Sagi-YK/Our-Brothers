@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput,StyleSheet, View, Text } from 'react-native';
+import { TextInput,StyleSheet, View, Text,Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 function AppInputText({place_holder,onChangeText,secureTextEntry,value,error,onBlur,touch,iconName}) {
@@ -20,7 +20,7 @@ function AppInputText({place_holder,onChangeText,secureTextEntry,value,error,onB
               
              </TextInput>
              {iconName? <MaterialCommunityIcons name={iconName} size={24} color={"grey"} style={styles.icon}></MaterialCommunityIcons>: null}
-             {(!error || !touch)? null : <Text style={{color:'red',fontSize:14,paddingLeft:8}}>{error}</Text>}
+             {(!error || !touch)? null : <Text style={{color:'red',fontSize:14,paddingLeft:8,textAlign: Platform.OS==='ios'?"right":null}}>{error}</Text>}
             </View>
         
     );

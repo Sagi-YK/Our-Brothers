@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Platform,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { db, auth } from "../firebaseConfig";
@@ -354,11 +355,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 8,
-    textAlign: "right",
+    textAlign: Platform.OS === 'ios'? "right" : null,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#ccc", 
     borderRadius: 10,
     padding: 8,
     marginBottom: 16,
@@ -366,6 +367,7 @@ const styles = StyleSheet.create({
     height: 40,
     textAlign: "right",
     textAlignVertical: "top",
+    //textAlign: Platform.OS === 'ios'? "right" : null,
   },
   selectedDate: {
     fontSize: 18,
