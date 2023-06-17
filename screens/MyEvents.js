@@ -268,7 +268,7 @@ const MyEvents = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
               ) : (
-                <View style={styles.buttonContainer}>
+                <View style={styles.buttonContainerCancelAtd}>
                   <TouchableOpacity
                     style={styles.buttonCancelAtd}
                     onPress={() => {
@@ -306,6 +306,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
     padding: 10,
+    // alignItems: "right",
   },
   containerMessage: {
     flex: 1,
@@ -323,10 +324,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
+    textAlign: Platform.OS === "ios" ? "right" : null,
   },
   itemTime: {
     fontSize: 14,
     color: "#666666",
+    textAlign: Platform.OS === "ios" ? "right" : null,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -334,6 +337,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 8,
     marginTop: 30,
+  },
+  buttonContainerCancelAtd: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    marginBottom: 8,
+    marginTop: 30,
+    alignSelf: Platform.OS === "ios" ? "flex-end" : null,
   },
   button: {
     paddingVertical: 8,
