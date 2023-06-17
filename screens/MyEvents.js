@@ -208,7 +208,7 @@ const MyEvents = ({ navigation }) => {
               {item.creator === userEmail ? (
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
-                    style={styles.button}
+                    style={styles.buttonCancel}
                     onPress={() => {
                       Alert.alert(
                         "",
@@ -270,7 +270,7 @@ const MyEvents = ({ navigation }) => {
               ) : (
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
-                    style={styles.button}
+                    style={styles.buttonCancelAtd}
                     onPress={() => {
                       Alert.alert(
                         "",
@@ -340,6 +340,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 10,
     backgroundColor: "#007aff",
+    alignSelf: "flex-start",
+  },
+  buttonCancelAtd: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: "#ab1818",
+    alignSelf: "flex-start",
+  },
+  buttonCancel: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: "#ab1818",
     alignSelf: "flex-start",
   },
   buttonText: {

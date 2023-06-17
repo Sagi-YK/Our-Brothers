@@ -242,25 +242,31 @@ const HomeScreen = () => {
             opacity: 10,
           }}
         ></View>
-        <ScrollView style={styles.Scroll}>
-          <View style={styles.mainPage}>
-            {state.map((event) => (
-              <TouchableOpacity
-                key={event.id}
-                style={styles.Eventbutton}
-                onPress={() => handlePress(event)}
-                activeOpacity={0.7}
-              >
-                <View>
-                  <Text style={styles.EventText}>{event.name}</Text>
-                  <Text style={styles.EventTextTime}>
-                    {event.date ? extractDate(event.date) : "טרם נקבע תאריך"}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+        {state.length === 0 ? (
+          <View style={styles.containerMessage}>
+            <Text style={styles.message}>אין מיזמים באוויר </Text>
           </View>
-        </ScrollView>
+        ) : (
+          <ScrollView style={styles.Scroll}>
+            <View style={styles.mainPage}>
+              {state.map((event) => (
+                <TouchableOpacity
+                  key={event.id}
+                  style={styles.Eventbutton}
+                  onPress={() => handlePress(event)}
+                  activeOpacity={0.7}
+                >
+                  <View>
+                    <Text style={styles.EventText}>{event.name}</Text>
+                    <Text style={styles.EventTextTime}>
+                      {event.date ? extractDate(event.date) : "טרם נקבע תאריך"}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        )}
       </ImageBackground>
 
       {selectedEvent && (
@@ -526,6 +532,26 @@ const styles = StyleSheet.create({
     elevation: 2,
     flex: 1,
     margin: 10,
+  },
+  message: {
+    fontSize: 24,
+    color: "#0c2e63",
+    fontWeight: "bold",
+  },
+  containerMessage: {
+    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    // padding: 16,
+    marginBottom: deviceHeight / 2 - 80,
+    backgroundColor: "white",
+    height: 50,
+    width: "80%",
+    borderRadius: 20,
+    borderColor: "#0c2e63",
+    borderWidth: 2,
+    alignSelf: "center", // Added to center horizontally
+    alignContent: "center", // Added to center vertically
   },
 });
 

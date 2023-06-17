@@ -211,12 +211,14 @@ function StatisticsScreen(props) {
   return (
     <View style={styles.container}>
       <View style={styles.maintext}>
-        <Text style={styles.titletext}>כמות פרויקטים : {statistics[0]} </Text>
+        <Text style={styles.titletext}>
+          כמות פרויקטים שנוצרו : {statistics[0]}{" "}
+        </Text>
       </View>
 
       <View style={styles.maintext}>
         <Text style={styles.titletext}>
-          כמות פרויקטים פעילים : {statistics[1]}{" "}
+          כמות פרויקטים שאושרו : {statistics[1]}{" "}
         </Text>
       </View>
 

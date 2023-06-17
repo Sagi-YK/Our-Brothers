@@ -275,6 +275,26 @@ const EditEvent = ({ route }) => {
               justifyContent: "space-between",
             }}
           >
+            <View
+              style={{
+                flexDirection: "row-reverse",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={styles.label}>כמות משתתפים מינימלית:</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  !fieldValidations.minNumber && styles.invalidInput,
+                  { height: 30, width: 60, marginRight: 15 },
+                ]}
+                value={minNumber}
+                keyboardType="numeric"
+                maxLength={999999999}
+                onChangeText={setMinNumber}
+              />
+            </View>
             <Text style={styles.label}>כמות משתתפים מקסימלית:</Text>
             <TextInput
               style={[
@@ -285,26 +305,6 @@ const EditEvent = ({ route }) => {
               value={maxNumber}
               keyboardType="numeric"
               onChangeText={setMaxNumber}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "row-reverse",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles.label}>כמות משתתפים מינימלית:</Text>
-            <TextInput
-              style={[
-                styles.input,
-                !fieldValidations.minNumber && styles.invalidInput,
-                { height: 30, width: 60, marginRight: 15 },
-              ]}
-              value={minNumber}
-              keyboardType="numeric"
-              maxLength={999999999}
-              onChangeText={setMinNumber}
             />
           </View>
         </View>
