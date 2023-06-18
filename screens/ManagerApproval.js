@@ -92,29 +92,52 @@ function ManagerApproval(props) {
 
     updateDoc(docRef, { status: !item.status }); // update specific filed in the doc
 
-    let tokens = [];
-    const querySnapshot = await getDocs(userRef);
-    querySnapshot.forEach((doc) => {
-      if (doc.data().token) {
-        tokens.push(doc.data().token);
-      }
-    });
+    getDocs(userRef).then((querySnapshot) => {
+      const tokens = [];
+      querySnapshot.forEach((doc) => {
+        if (doc.data().token) {
+          tokens.push(doc.data().token);
+        }
+      });
 
-    if (tokens.length > 0) {
-      fetch("https://exp.host/--/api/v2/push/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: tokens,
+      if (tokens.length > 0) {
+        const notifications = tokens.map((token) => ({
+          to: token,
           title: "מיזם חדש",
           body: "מיזם חדש עלה לאוויר!",
-        }),
-      });
+        }));
+
+        Promise.all(
+          notifications.map((notification) =>
+            fetch("https://exp.host/--/api/v2/push/send", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(notification),
+            })
+          )
+        )
+          .then((responses) => {
+            responses.forEach((response) => {
+              if (!response.ok) {
+                console.error(
+                  "Error sending push notification:",
+                  response.status,
+                  response.statusText
+                );
+              }
+            });
+            console.log("Push notifications sent successfully");
+          })
+          .catch((error) => {
+            console.error("Error sending push notifications:", error);
+          });
+      }
+
       setModalVisible(false);
       setSelectedEvent(null);
-    }
+    });
   };
 
   const handleCancell = (item) => {
