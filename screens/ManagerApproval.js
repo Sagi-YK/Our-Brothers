@@ -309,24 +309,31 @@ const styles = StyleSheet.create({
   Eventbutton: {
     width: deviceWidth - 40,
     height: 80,
-    backgroundColor: "#0c2e63",
+    // backgroundColor: "#00a099",
+    backgroundColor: "white",
+
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
     margin: 15,
-    borderWidth: 2,
-    borderColor: "#00a099",
+    borderWidth: 3,
+    // borderColor: "#00a099",
+    borderColor: "#0c2e63",
     position: "relative",
     overflow: "hidden",
   },
   EventText: {
     fontSize: 25,
-    color: "white",
+    color: "#0c2e63",
+    // color: "white",
     textAlign: "center",
+    fontWeight: "bold",
   },
   EventTextTime: {
     fontSize: 20,
-    color: "#A6AAAA",
+    color: "#0c2e63",
+    // color: "white",
+
     textAlign: "center",
   },
   message: {
