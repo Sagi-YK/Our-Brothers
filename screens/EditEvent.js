@@ -267,6 +267,26 @@ const EditEvent = ({ route }) => {
           multiline={true}
           placeholder="עד 500 תווים"
         />
+        <View
+          style={{
+            flexDirection: "row-reverse",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={styles.label}>כמות משתתפים מינימלית:</Text>
+          <TextInput
+            style={[
+              styles.input,
+              !fieldValidations.minNumber && styles.invalidInput,
+              { height: 30, width: 60, marginRight: 15 },
+            ]}
+            value={minNumber}
+            keyboardType="numeric"
+            maxLength={7}
+            onChangeText={setMinNumber}
+          />
+        </View>
         <View>
           <View
             style={{
@@ -275,26 +295,6 @@ const EditEvent = ({ route }) => {
               justifyContent: "space-between",
             }}
           >
-            <View
-              style={{
-                flexDirection: "row-reverse",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={styles.label}>כמות משתתפים מינימלית:</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  !fieldValidations.minNumber && styles.invalidInput,
-                  { height: 30, width: 60, marginRight: 15 },
-                ]}
-                value={minNumber}
-                keyboardType="numeric"
-                maxLength={999999999}
-                onChangeText={setMinNumber}
-              />
-            </View>
             <Text style={styles.label}>כמות משתתפים מקסימלית:</Text>
             <TextInput
               style={[
@@ -304,6 +304,7 @@ const EditEvent = ({ route }) => {
               ]}
               value={maxNumber}
               keyboardType="numeric"
+              maxLength={7}
               onChangeText={setMaxNumber}
             />
           </View>
@@ -383,15 +384,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#fff",
   },
+  
   label: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 8,
-    textAlign: "right",
+    textAlign: Platform.OS === 'ios'? "right" : null,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#ccc", 
     borderRadius: 10,
     padding: 8,
     marginBottom: 16,
@@ -399,6 +401,7 @@ const styles = StyleSheet.create({
     height: 40,
     textAlign: "right",
     textAlignVertical: "top",
+    //textAlign: Platform.OS === 'ios'? "right" : null,
   },
   selectedDate: {
     fontSize: 18,
