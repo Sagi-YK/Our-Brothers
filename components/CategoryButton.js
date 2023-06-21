@@ -49,7 +49,7 @@ const CategoryDropdown = ({ selectedCategory, onSelectCategory, isCategorySelect
   return (
     <View style={styles.container}>
       <Text style={styles.label}>קטגורית המיזם:</Text>
-      <TouchableOpacity onPress={() => setDropdownVisible(true)} style={[styles.button, !isCategorySelected && styles.invalidInput,]}>
+      <TouchableOpacity activeOpacity={0.7} onPress={() => setDropdownVisible(true)} style={[styles.button, !isCategorySelected && styles.invalidInput,]}>
         <Text style={styles.buttonText}>{selectedCategory || 'בחר קטגוריה'}</Text>
       </TouchableOpacity>
       <Modal

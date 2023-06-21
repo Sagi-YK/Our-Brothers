@@ -10,6 +10,10 @@ import { auth } from "./firebaseConfig";
 import AdminHomeScreen from "./screens/AdminHomeScreen";
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
+import { I18nManager, View } from "react-native";
+
+I18nManager.forceRTL(true)
+I18nManager.allowRTL(true)
 
 const Tab = createBottomTabNavigator();
 
@@ -43,8 +47,62 @@ export default function App() {
             alignItems: "center",
             alignSelf: "center",
           },
+          headerStyle: {
+            backgroundColor: "#4682B4",
+          },
+          headerTitleStyle: {
+            color: "white",
+            fontWeight: "bold",
+            alignSelf: "center",
+          },
+          headerTitleContainerStyle: {
+            alignItems: "center",
+            width: "100%",
+          },
         }}
       >
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f5f5f5",
+            },
+            headerTitleStyle: {
+              color: "#00a099",
+              fontWeight: "bold",
+              fontSize: 35,
+            },
+            headerTitleContainerStyle: {
+              alignItems: "center",
+              width: "100%",
+            },
+            headerShown: true,
+            headerTitle: "המיזם",
+            tabBarLabel: () => null,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" color={color} size={30} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="newProject"
+          component={NewProjectScreen}
+          options={({ navigation }) => ({
+            headerShown: true,
+            headerTitle: "מיזם חדש",
+            headerLeft: () => <BackButton navigation={navigation} />,
+            tabBarLabel: () => null,
+            tabBarStyle: { display: "none" },
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="plus-circle"
+                color={"#00a099"}
+                size={60}
+              />
+            ),
+          })}
+        />
         <Tab.Screen
           name="Profile"
           component={
@@ -70,59 +128,6 @@ export default function App() {
             tabBarLabel: () => null,
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="account" color={color} size={30} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="newProject"
-          component={NewProjectScreen}
-          options={({ navigation }) => ({
-            headerStyle: {
-              backgroundColor: "#4682B4",
-            },
-            headerTitleStyle: {
-              color: "white",
-              fontWeight: "bold",
-            },
-            headerTitleContainerStyle: {
-              alignItems: "center",
-              width: "100%",
-            },
-            headerShown: true,
-            headerTitle: "מיזם חדש",
-            headerLeft: () => <BackButton navigation={navigation} />,
-            tabBarLabel: () => null,
-            tabBarStyle: { display: "none" },
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons
-                name="plus-circle"
-                color={"#00a099"}
-                size={60}
-              />
-            ),
-          })}
-        />
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            headerStyle: {
-              backgroundColor: "#f5f5f5",
-            },
-            headerTitleStyle: {
-              color: "#00a099",
-              fontWeight: "bold",
-              fontSize: 35,
-            },
-            headerTitleContainerStyle: {
-              alignItems: "center",
-              width: "100%",
-            },
-            headerShown: true,
-            headerTitle: "המיזם",
-            tabBarLabel: () => null,
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="home" color={color} size={30} />
             ),
           }}
         />

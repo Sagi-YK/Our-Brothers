@@ -4,10 +4,9 @@ import LogInScreen from "./LogInScreen";
 import NewPasswordScreen from "./NewPasswordScreen";
 import RestartPasswordScreen from "./RestartPasswordScreen";
 import SendCodeScreen from "./SendCodeScreen";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import AdminHomeScreen from "./AdminHomeScreen";
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 function LoginNavScreen(props) {
   return (

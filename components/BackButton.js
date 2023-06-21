@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 const BackButton = ({ navigation }) => {
     return (
         <TouchableOpacity activeOpacity={0.7} onPress={() => {navigation.goBack()}}>
-            <MaterialCommunityIcons name='arrow-left' color={'black'} size={30} />
+            <MaterialCommunityIcons name='arrow-right' color={'white'} size={30} />
         </TouchableOpacity>
     );
 };

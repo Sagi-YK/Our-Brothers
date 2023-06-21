@@ -234,7 +234,7 @@ const NewProjectScreen = () => {
         />
         <View
           style={{
-            flexDirection: "row-reverse",
+            flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
           }}
@@ -252,27 +252,25 @@ const NewProjectScreen = () => {
             onChangeText={setMinNumber}
           />
         </View>
-        <View>
-          <View
-            style={{
-              flexDirection: "row-reverse",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles.label}>כמות משתתפים מקסימלית:</Text>
-            <TextInput
-              style={[
-                styles.input,
-                !fieldValidations.maxNumber && styles.invalidInput,
-                { height: 30, width: 60, marginRight: 15 },
-              ]}
-              value={maxNumber}
-              keyboardType="numeric"
-              maxLength={7}
-              onChangeText={setMaxNumber}
-            />
-          </View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={styles.label}>כמות משתתפים מקסימלית:</Text>
+          <TextInput
+            style={[
+              styles.input,
+              !fieldValidations.maxNumber && styles.invalidInput,
+              { height: 30, width: 60, marginRight: 15 },
+            ]}
+            value={maxNumber}
+            keyboardType="numeric"
+            maxLength={7}
+            onChangeText={setMaxNumber}
+          />
         </View>
         <Text style={[styles.label, { marginTop: 10 }]}>מיקום (לא חובה):</Text>
         <TextInput
@@ -281,7 +279,7 @@ const NewProjectScreen = () => {
           onChangeText={setProjectLocation}
           maxLength={50}
         />
-        <View style={{ alignItems: "flex-end", marginBottom: 20 }}>
+        <View style={{ marginBottom: 20 }}>
           <Text style={styles.label}>תאריך (לא חובה):</Text>
           {selectedDate ? (
             <Text style={styles.selectedDate}>
@@ -307,7 +305,7 @@ const NewProjectScreen = () => {
             />
           )}
         </View>
-        <View style={{ alignItems: "flex-end", marginBottom: 20 }}>
+        <View style={{ marginBottom: 20 }}>
           <Text style={styles.label}>שעה (לא חובה):</Text>
           {selectedTime ? (
             <Text style={styles.selectedDate}>
@@ -355,7 +353,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 8,
-    textAlign: Platform.OS === 'ios'? "right" : null,
+    // textAlign: "right",
   },
   input: {
     borderWidth: 1,
@@ -367,12 +365,10 @@ const styles = StyleSheet.create({
     height: 40,
     textAlign: "right",
     textAlignVertical: "top",
-    //textAlign: Platform.OS === 'ios'? "right" : null,
   },
   selectedDate: {
     fontSize: 18,
     marginBottom: 20,
-    // textAlign: 'right'
   },
   appButtonContainer: {
     elevation: 8,
