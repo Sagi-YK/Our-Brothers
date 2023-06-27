@@ -134,7 +134,6 @@ const MyEvents = ({ navigation }) => {
     const itemRef = doc(db, `users/${user.id}`);
     const projectRef = doc(db, `projects/${item.id}`);
     let remainEvents = [];
-    // item.data().numpraticipants = item.data().numpraticipants - 1;
     user.myEvents.forEach((oneEvent) => {
       if (oneEvent !== item.id) {
         remainEvents.push(oneEvent);
@@ -306,7 +305,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F5",
     padding: 10,
-    // alignItems: "right",
   },
   containerMessage: {
     flex: 1,
@@ -380,5 +378,3 @@ const styles = StyleSheet.create({
 });
 
 export default MyEvents;
-
-// TODO - UPDATEEVENT - NEED TO SENT THE EVENT.ID TO THE NEW PAGE

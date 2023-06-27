@@ -25,7 +25,6 @@ const Stack = createStackNavigator();
 const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      // Navigate to "MyProfile"
       navigation.navigate("MyProfile");
     });
 
@@ -110,9 +109,8 @@ const ProfilePage = ({ navigation }) => {
       }
     });
 
-    // Clean up the subscription when the component unmounts
     return () => unsubscribe();
-  }, []); // Empty dependency array ensures the effect runs only once
+  }, []);
 
   return (
     <ImageBackground
@@ -178,7 +176,7 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 70, // Increase the marginTop value to lower the buttons
+    marginTop: 70,
     marginBottom: 30,
   },
   button: {

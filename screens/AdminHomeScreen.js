@@ -1,7 +1,3 @@
-/**
- * this component will display the home page for the admin
- */
-
 import {
   View,
   TouchableOpacity,
@@ -14,7 +10,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import ProfileScreen from "./ProfileScreen";
 import StatisticsScreen from "./StatisticsScreen";
 import ManagerApproval from "./ManagerApproval";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { auth } from "../firebaseConfig";
 import AdminManagment from "./AdminManagment";
 
@@ -23,7 +19,6 @@ const Stack = createStackNavigator();
 const AdminHomeScreen = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      // Navigate to "MyProfile"
       navigation.navigate("MyProfile");
     });
 
@@ -120,20 +115,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent", // Set background color to transparent
+    backgroundColor: "transparent",
   },
   containerHead: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent", // Set background color to transparent
+    backgroundColor: "transparent",
     marginTop: 60,
   },
   containerButtons: {
     flex: 4,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent", // Set background color to transparent
+    backgroundColor: "transparent",
   },
   button: {
     width: 250,
