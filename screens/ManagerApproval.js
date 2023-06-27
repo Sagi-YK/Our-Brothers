@@ -20,7 +20,6 @@ import {
   Timestamp,
 } from "firebase/firestore";
 
-// import * as Device from 'expo-device';
 import * as Notifications from "expo-notifications";
 
 const deviceWidth = Dimensions.get("window").width;
@@ -294,14 +293,11 @@ function ManagerApproval(props) {
 
 const styles = StyleSheet.create({
   container: {
-    // justifyContent:'center',
     alignItems: "center",
     paddingTop: 50,
     flex: 1,
-    //width:"100%"
-
     backgroundColor: "#dcdcdc",
-    // flex: 1,
+    
   },
   scroll: {
     backgroundColor: "#DCDCDC",
@@ -309,7 +305,6 @@ const styles = StyleSheet.create({
   Eventbutton: {
     width: deviceWidth - 40,
     height: 80,
-    // backgroundColor: "#00a099",
     backgroundColor: "white",
 
     borderRadius: 15,
@@ -317,7 +312,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 15,
     borderWidth: 3,
-    // borderColor: "#00a099",
     borderColor: "#0c2e63",
     position: "relative",
     overflow: "hidden",
@@ -325,15 +319,12 @@ const styles = StyleSheet.create({
   EventText: {
     fontSize: 25,
     color: "#0c2e63",
-    // color: "white",
     textAlign: "center",
     fontWeight: "bold",
   },
   EventTextTime: {
     fontSize: 20,
     color: "#0c2e63",
-    // color: "white",
-
     textAlign: "center",
   },
   message: {

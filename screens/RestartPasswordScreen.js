@@ -25,8 +25,7 @@ function RestartPasswordScreen(props) {
   const navigation = useNavigation();
 
   const handleSent = async (email) => {
-    //await sendPasswordResetEmail(auth,email);
-
+    
     await sendPasswordResetEmail(auth, email)
       .then(() => {
         Alert.alert("", "נשלח לאימייל קישור לאיפוס סיסמא ", [
@@ -40,7 +39,7 @@ function RestartPasswordScreen(props) {
       });
   };
 
-  //useEffect()
+ 
 
   return (
     <Formik
@@ -104,16 +103,4 @@ const styles = StyleSheet.create({
 
 export default RestartPasswordScreen;
 
-// <AppForm
-// first_input_name={'email'}
-// set_first_input_val={handleChange('email')}
-// first_input_value={values.email}
-// first_error={errors.email}
-// first_input_touched={()=>setFieldTouched('email')}
-// first_input_is_touched={touched.email}
 
-// general_text_button={'שלח'}
-// general_button_function={handleSubmit}
-// >
-
-// </AppForm>

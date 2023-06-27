@@ -20,7 +20,7 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
-import AppButton from "../components/AppButton";
+
 import AppInputText from "../components/AppInputText";
 import AppCheckBox from "../components/AppCheckBox";
 import {
@@ -62,7 +62,6 @@ function SignUpScreen() {
       .then((userCredential) => {
         const user = userCredential.user;
 
-        // navigation.navigate("Home")
         registerForPushNotificationsAsync().then((token) => {
           let userDoc = {
             email: user.email,

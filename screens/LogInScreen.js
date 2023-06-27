@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-
-import AppForm from "./AppForm";
 import { useNavigation } from "@react-navigation/native";
-import { Formik, validateYupSchema } from "formik";
+import { Formik} from "formik";
 import * as Yup from "yup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
@@ -17,7 +15,6 @@ import {
   Text,
 } from "react-native";
 import AppInputText from "../components/AppInputText";
-import AppButton from "../components/AppButton";
 import AppText from "../components/AppText";
 import { doc, getDocs, collection } from "firebase/firestore";
 
@@ -34,9 +31,7 @@ function LogInScreen(props) {
   const goToPage1 = () => {
     navigation.navigate("Sign-Up");
   };
-  // const [log_in_value,set_log_in_value] = useState('')
 
-  // const [Password_value,set_password_value] = useState('')
 
   const navigation = useNavigation();
 
