@@ -30,15 +30,6 @@ const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
 const projectRef = collection(db, "projects"); // reference to collection projects
 const usersRef = collection(db, "users"); // reference to collection users
-
-const image = {
-  uri: "https://www.valeriaprops.co.il/wp-content/uploads/2022/02/R0259001466.jpeg",
-};
-
-const image2 = {
-  uri: "https://img.freepik.com/free-photo/background-gradient-lights_23-2149305012.jpg?w=740&t=st=1685896597~exp=1685897197~hmac=d2aab27fae632b3ac35a5a1554662a3d5781b0af9e322c10977a8f7353b8281b",
-};
-
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -301,7 +292,7 @@ const HomeScreen = () => {
                   <Text style={{ fontWeight: "bold" }}>פרטים:{"\n"}</Text>{" "}
                   {selectedEvent.description}
                   {"\n\n"}
-                  {login === "iyarlevi5@gmail.com" ? (
+                  {login === "Theproject.ourbrothers@gmail.com" ? (
                     <Text>
                       <Text style={{ fontWeight: "bold" }}>
                         פרטי קשר:{"\n"}
@@ -332,7 +323,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.adminButtonContainer}>
-                {login === "iyarlevi5@gmail.com" ? (
+                {login === "Theproject.ourbrothers@gmail.com" ? (
                   <TouchableOpacity
                     style={styles.DeleteButton}
                     onPress={() => {
@@ -370,45 +361,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   navBar: {
-    // flex: 1,
     width: deviceWidth,
     height: deviceHeight / 8,
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor: '#87ceeb',
     backgroundColor: "rgba(0, 0, 0, 0)", // Transparent background
   },
   mainPage: {
-    // flex: 7,
     paddingTop: 0,
-    // height: deviceHeight,
-    // marginTop: 20,
     marginBottom: deviceHeight / 8,
     width: deviceWidth,
     alignItems: "center",
     justifyContent: "center",
-    // backgroundColor: 'red ',
   },
   image: {
-    // paddingTop: deviceHeight / 12,
     flex: 1,
     resizeMode: "cover",
   },
-  image2: {
-    flex: 1,
-    // height: deviceHeight,
-    resizeMode: "cover",
-  },
-
   Scroll: {
     paddingTop: 0,
     maxHeight: deviceHeight - deviceHeight / 8 - deviceHeight / 12, // Adjust the maxHeight according to your needs
   },
   footer: {
-    // flex: 1,
     width: deviceWidth,
     height: deviceHeight / 10,
-    // backgroundColor: 'green',
     borderTopColor: "black",
     alignItems: "center",
     justifyContent: "center",
@@ -425,7 +401,6 @@ const styles = StyleSheet.create({
   Eventbutton: {
     width: deviceWidth - 40,
     height: 80,
-    // backgroundColor: "#00a099",
     backgroundColor: "white",
 
     borderRadius: 15,
@@ -433,7 +408,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 15,
     borderWidth: 3,
-    // borderColor: "#00a099",
     borderColor: "#0c2e63",
     position: "relative",
     overflow: "hidden",
@@ -441,14 +415,12 @@ const styles = StyleSheet.create({
   EventText: {
     fontSize: 25,
     color: "#0c2e63",
-    // color: "white",
     textAlign: "center",
     fontWeight: "bold",
   },
   EventTextTime: {
     fontSize: 20,
     color: "#0c2e63",
-    // color: "white",
 
     textAlign: "center",
   },
@@ -539,10 +511,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   containerMessage: {
-    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // padding: 16,
     marginBottom: deviceHeight / 2 - 80,
     backgroundColor: "white",
     height: 50,
