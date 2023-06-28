@@ -139,13 +139,13 @@ const MyEvents = ({ navigation }) => {
         remainEvents.push(oneEvent);
       }
     });
-    const iyar = item.participants.filter((ev) => {
+    const oneUser = item.participants.filter((ev) => {
       return ev !== user.email;
     });
     updateDoc(itemRef, { myEvents: remainEvents });
     updateDoc(projectRef, {
       numpraticipants: item.numpraticipants - 1,
-      participants: iyar,
+      participants: oneUser,
     });
     user["myEvents"] = remainEvents;
     setUser(user);

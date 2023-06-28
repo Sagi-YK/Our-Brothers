@@ -12,8 +12,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { I18nManager, View } from "react-native";
 
-I18nManager.forceRTL(true)
-I18nManager.allowRTL(true)
+I18nManager.forceRTL(true);
+I18nManager.allowRTL(true);
 
 const Tab = createBottomTabNavigator();
 
@@ -106,7 +106,7 @@ export default function App() {
         <Tab.Screen
           name="Profile"
           component={
-            login === "" || login !== "iyarlevi5@gmail.com"
+            login === "" || login !== "Theproject.ourbrothers@gmail.com"
               ? ProfileScreen
               : AdminHomeScreen
           }

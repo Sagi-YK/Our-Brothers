@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Formik} from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebaseConfig";
@@ -19,11 +19,18 @@ import AppText from "../components/AppText";
 import { doc, getDocs, collection } from "firebase/firestore";
 
 const validateSchema = Yup.object().shape({
-  email: Yup.string().email("אימייל לא תקין!").required("שדה חובה!").label("Email"),
-  Password: Yup.string().required("שדה חובה!").min(6,"מינימום 6 תווים!").matches(
-    /^(?=.*[a-z])(?=.*[A-Z])/,
-    "הסיסמא חייבת להכיל לפחות אות אחת גדולה ואות אחת קטנה!"
-  ).label("Password"),
+  email: Yup.string()
+    .email("אימייל לא תקין!")
+    .required("שדה חובה!")
+    .label("Email"),
+  Password: Yup.string()
+    .required("שדה חובה!")
+    .min(6, "מינימום 6 תווים!")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])/,
+      "הסיסמא חייבת להכיל לפחות אות אחת גדולה ואות אחת קטנה!"
+    )
+    .label("Password"),
 });
 const userRef = collection(db, "users");
 
@@ -31,7 +38,6 @@ function LogInScreen(props) {
   const goToPage1 = () => {
     navigation.navigate("Sign-Up");
   };
-
 
   const navigation = useNavigation();
 
@@ -45,7 +51,7 @@ function LogInScreen(props) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const fetchData = async () => {
-          if (email === "iyarlevi5@gmail.com") {
+          if (email === "Theproject.ourbrothers@gmail.com") {
             navigation.navigate("admin-screen");
             return;
           }
@@ -113,11 +119,19 @@ function LogInScreen(props) {
                 iconName={"lock"}
               ></AppInputText>
 
-              <TouchableOpacity activeOpacity={0.7} style={styles.button1} onPress={handleSubmit}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.button1}
+                onPress={handleSubmit}
+              >
                 <Text style={styles.buttonText1}>התחבר</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.7} style={styles.button2} onPress={handleSignUpPress}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.button2}
+                onPress={handleSignUpPress}
+              >
                 <Text style={styles.buttonText2}>הרשמה</Text>
               </TouchableOpacity>
 
@@ -154,7 +168,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4682B4",
     justifyContent: "center",
     alignItems: "center",
-    marginTop:10,
+    marginTop: 10,
   },
   button2: {
     width: 270,
