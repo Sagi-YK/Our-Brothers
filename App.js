@@ -106,7 +106,7 @@ export default function App() {
         <Tab.Screen
           name="Profile"
           component={
-            login === "" || login !== "Theproject.ourbrothers@gmail.com"
+            login === "" || login !== "theproject.ourbrothers@gmail.com"
               ? ProfileScreen
               : AdminHomeScreen
           }

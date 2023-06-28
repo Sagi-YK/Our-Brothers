@@ -292,7 +292,7 @@ const HomeScreen = () => {
                   <Text style={{ fontWeight: "bold" }}>פרטים:{"\n"}</Text>{" "}
                   {selectedEvent.description}
                   {"\n\n"}
-                  {login === "Theproject.ourbrothers@gmail.com" ? (
+                  {login === "theproject.ourbrothers@gmail.com" ? (
                     <Text>
                       <Text style={{ fontWeight: "bold" }}>
                         פרטי קשר:{"\n"}
@@ -323,7 +323,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.adminButtonContainer}>
-                {login === "Theproject.ourbrothers@gmail.com" ? (
+                {login === "theproject.ourbrothers@gmail.com" ? (
                   <TouchableOpacity
                     style={styles.DeleteButton}
                     onPress={() => {

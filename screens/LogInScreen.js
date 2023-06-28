@@ -51,7 +51,7 @@ function LogInScreen(props) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const fetchData = async () => {
-          if (email === "Theproject.ourbrothers@gmail.com") {
+          if (email === "theproject.ourbrothers@gmail.com") {
             navigation.navigate("admin-screen");
             return;
           }
